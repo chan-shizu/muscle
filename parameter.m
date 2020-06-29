@@ -1,26 +1,28 @@
+function parameter
 %ばね+筋線維のモデル
-clc; %コマンドウェイドウからすべてのテキストをクリア
-clear; %ワークスペースからアイテムを削除し，システムメモリ開放
+% clc; %コマンドウェイドウからすべてのテキストをクリア
+% clear; %ワークスペースからアイテムを削除し，システムメモリ開放
 warning('on','all');%すべての警告を有効にする
 warning;
 muscleNames = loadMuscleName();
-muscle_name = [muscleNames{1}]
+muscle_name = [muscleNames{1}];
 
 E=5*10^4; %file:///C:/Users/%E5%8D%A0%E9%83%A8%E3%80%80%E9%BA%BB%E9%87%8C%E5%AD%90/Downloads/nagano_05-02-05%20(1).pdf
 v=0.49;
 %k=8500;
 %k=8237;
-
 %ks=166.7558;
 %ks=170;
 Fmax=5;
 PEsh = 4;
 PExm = 0.4;
-y=5;      %横方向のポイント数
-t=5;      %縦方向のポイント数
-h=6;      %高さ方向のポイント数
 
-file_name_data0 = ['C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\muscle\',muscle_name, '_min_final.csv']
+divisionMuscle = readmatrix("divisionMuscle.csv");
+y=divisionMuscle(1);
+t=divisionMuscle(2);
+h=divisionMuscle(3);
+
+file_name_data0 = ['muscle\',muscle_name, '_min_final.csv'];
 % file_name_data0 = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\", muscle_name,"_min_final.csv")
 % file_name_data0 = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\data0_arm_rot.csv")
 data0=csvread(file_name_data0, 0, 0)/1000; %mmからmに変換
@@ -89,7 +91,7 @@ yz(:,1)=5;
 
 se=vertcat(yoko,tate,takasa,xy,xz,yz);
 seNum=size(se);
-file_name_se = ['C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\',muscle_name, '_se.csv']
+file_name_se = ['parameter\',muscle_name, '_se.csv'];
 % file_name_se = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\parameter\", muscle_name, "_se.csv")
 csvwrite(file_name_se, se);
 %% tetra
@@ -126,14 +128,14 @@ for i=1:h-2
     end
 end
 tetraNum=size(tetra);
-file_name_tetra = ['C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\',muscle_name, '_tetra.csv']
+file_name_tetra = ['parameter\',muscle_name, '_tetra.csv'];
 % file_name_tetra = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\parameter\", muscle_name, "_tetra.csv")
 csvwrite(file_name_tetra, tetra);
 
 %% 3D
 tetraNum=size(tetra);
-for j=1:tetraNum(1)/5;
-    for i=1:tetraNum(2);
+for j=1:tetraNum(1)/5
+    for i=1:tetraNum(2)
         x(i+(j-1)*tetraNum(2),1)=tetra(1+5*(j-1),i);  x(i+(j-1)*tetraNum(2),2)=data0(tetra(2+5*(j-1),i),1);  x(i+(j-1)*tetraNum(2),3)=data0(tetra(3+5*(j-1),i),1);  x(i+(j-1)*tetraNum(2),4)=data0(tetra(4+5*(j-1),i),1);  x(i+(j-1)*tetraNum(2),5)=data0(tetra(5+5*(j-1),i),1);
         y(i+(j-1)*tetraNum(2),1)=tetra(1+5*(j-1),i);  y(i+(j-1)*tetraNum(2),2)=data0(tetra(2+5*(j-1),i),2);  y(i+(j-1)*tetraNum(2),3)=data0(tetra(3+5*(j-1),i),2);  y(i+(j-1)*tetraNum(2),4)=data0(tetra(4+5*(j-1),i),2);  y(i+(j-1)*tetraNum(2),5)=data0(tetra(5+5*(j-1),i),2);
         z(i+(j-1)*tetraNum(2),1)=tetra(1+5*(j-1),i);  z(i+(j-1)*tetraNum(2),2)=data0(tetra(2+5*(j-1),i),3);  z(i+(j-1)*tetraNum(2),3)=data0(tetra(3+5*(j-1),i),3);  z(i+(j-1)*tetraNum(2),4)=data0(tetra(4+5*(j-1),i),3);  z(i+(j-1)*tetraNum(2),5)=data0(tetra(5+5*(j-1),i),3);
@@ -150,7 +152,7 @@ D=E/(1+v)/(1-2*v)*[1-v v v 0 0 0;
                    0 0 0 0 1/2-v 0
                    0 0 0 0 0 1/2-v];
 
-for i=1:tetraNum(2)*tetraNum(1)/5;
+for i=1:tetraNum(2)*tetraNum(1)/5
     a1(i,1)=y(i,2)*(z(i,4)-z(i,3))-y(i,3)*(z(i,4)-z(i,2))+y(i,4)*(z(i,3)-z(i,2));
     a2(i,1)=-y(i,1)*(z(i,4)-z(i,3))+y(i,3)*(z(i,4)-z(i,1))-y(i,4)*(z(i,3)-z(i,1));
     a3(i,1)=y(i,1)*(z(i,4)-z(i,2))-y(i,2)*(z(i,4)-z(i,1))+y(i,4)*(z(i,2)-z(i,1));
@@ -178,7 +180,7 @@ end
 
 
 %KMSMを求める
-for i=1:tetraNum(2)*tetraNum(1)/5;
+for i=1:tetraNum(2)*tetraNum(1)/5
     H12(:,:,i)=1/(((x(i,1)-x(i,2))^2+(y(i,1)-y(i,2))^2+(z(i,1)-z(i,2))^2)^0.5)^2*[x(i,1)-x(i,2); y(i,1)-y(i,2); z(i,1)-z(i,2)]*[x(i,1)-x(i,2); y(i,1)-y(i,2); z(i,1)-z(i,2);].';
     H13(:,:,i)=1/(((x(i,1)-x(i,3))^2+(y(i,1)-y(i,3))^2+(z(i,1)-z(i,3))^2)^0.5)^2*[x(i,1)-x(i,3); y(i,1)-y(i,3); z(i,1)-z(i,3)]*[x(i,1)-x(i,3); y(i,1)-y(i,3); z(i,1)-z(i,3);].';
     H14(:,:,i)=1/(((x(i,1)-x(i,4))^2+(y(i,1)-y(i,4))^2+(z(i,1)-z(i,4))^2)^0.5)^2*[x(i,1)-x(i,4); y(i,1)-y(i,4); z(i,1)-z(i,4)]*[x(i,1)-x(i,4); y(i,1)-y(i,4); z(i,1)-z(i,4);].';
@@ -194,7 +196,7 @@ end
 
 
 %KCを求める
-for i=1:tetraNum(2)*tetraNum(1)/5;
+for i=1:tetraNum(2)*tetraNum(1)/5
 dr1(:,i)=1/(6*V0(i,1))*cross([x(i,2)-x(i,4); y(i,2)-y(i,4); z(i,2)-z(i,4)], [x(i,3)-x(i,4); y(i,3)-y(i,4); z(i,3)-z(i,4)]); %2行1列
 dr2(:,i)=1/(6*V0(i,1))*cross([x(i,3)-x(i,1); y(i,3)-y(i,1); z(i,3)-z(i,1)], [x(i,4)-x(i,1); y(i,4)-y(i,1); z(i,4)-z(i,1)]);
 dr3(:,i)=1/(6*V0(i,1))*cross([x(i,4)-x(i,2); y(i,4)-y(i,2); z(i,4)-z(i,2)], [x(i,1)-x(i,2); y(i,1)-y(i,2); z(i,1)-z(i,2)]);
@@ -211,8 +213,8 @@ end
 
 
 %% 最小二乗法 参考(http://www.eli.hokkai-s-u.ac.jp/~kikuchi/ma2/chap08.html)
-for i=1:tetraNum(2)*tetraNum(1)/5;
-    for j=1:12;
+for i=1:tetraNum(2)*tetraNum(1)/5
+    for j=1:12
         Y(12*(j-1)+1:12*j,1,i)=KCST(j,1:12,i);
         X(12*(j-1)+1:12*j,1,i)=KMSM(j,1:12,i);   %k
         X(12*(j-1)+1:12*j,2,i)=KC(j,1:12,i);   %ks
@@ -220,9 +222,10 @@ for i=1:tetraNum(2)*tetraNum(1)/5;
 a(:,:,i)=X(:,:,i)\Y(:,:,i);
 end
 
-ave(1,1)=mean(a(1,1,:)); %k
-ave(2,1)=mean(a(2,1,:)); %ks
-file_name_a = ['C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\',muscle_name, '_a.csv']
+ave(1,1)=mean(a(1,1,:)) %k
+ave(2,1)=mean(a(2,1,:)) %ks
+file_name_a = ['parameter\',muscle_name, '_a.csv'];
 % file_name_a = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\parameter\", muscle_name, "_a.csv")
 csvwrite(file_name_a, ave);
+end
 

@@ -5,33 +5,34 @@ warning('on','all');
 warning;
 muscleNames = loadMuscleName();
 muscle_name = [muscleNames{1}];
+divisionMuscle = readmatrix("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\divisionMuscle.csv");
+y=divisionMuscle(1);
+t=divisionMuscle(2);
+h=divisionMuscle(3);
 
 %入力
 % a=csvread('a_r.csv', 0, 0);
 % springk=a(1,1)/10000;    %1900
 % springk = 8983400/10000;
 springk=1000;  %100
-kv = 0.10731*50000;
+% kv = 0.10731*50000;
 % kv=a(2,1)*50000;   %85
 
 kv=0.25;    %0.25
 
-y=5;
-t=5;
-h=6;
 mass=5*10^(-3);
 conk=60;%60
-conc=60;
+conc=60;%60
 bNum=(y-1)*(t-1)*(h-1)/8;   %blockNumber"C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\data_test_square.csv"
 %-9.98031度回転させる(筋肉ごとに代わる)
-file_name_data = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\muscle\data_", muscle_name, ".csv")%"data_rot_h.csv"
-file_name_data0 = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\muscle\", muscle_name, "_min_final.csv")%"data0_rot_h.csv"
+file_name_data = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\muscle\data_", muscle_name, ".csv");%"data_rot_h.csv"
+file_name_data0 = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\muscle\", muscle_name, "_min_final.csv");%"data0_rot_h.csv"
 % file_name_data = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\urabe_arm_data.csv")%"data_rot_h.csv"
 % file_name_data0 = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\urabe_arm_data0.csv")%"data0_rot_h.csv"
-file_name_se = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\", muscle_name, "_se.csv")
-file_name_tetra = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\", muscle_name, "_tetra.csv")
-data= csvread(file_name_data, 0, 0)*(10^6);%/1000;
-data0=csvread(file_name_data0, 0, 0)*(10^6);%/1000;
+file_name_se = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\", muscle_name, "_se.csv");
+file_name_tetra = strcat("C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\", muscle_name, "_tetra.csv");
+data= csvread(file_name_data, 0, 0);%/1000;%/1000;
+data0=csvread(file_name_data0, 0, 0);%/1000;%/1000;
 % data= vpa(data,20);
 % data0=vpa(data0,20);
 % data= double(data);
@@ -44,7 +45,7 @@ pointNum = size(data0);
 seNum = size(se);
 tetraNum = size(tetra);
 dt=1*10^(-3);
-
+% dt = 1*10^(-1);
 
 % Hillモデル計算の準備
 Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
@@ -57,10 +58,60 @@ PEsh = 10;                  %筋肉の部位ごとの特性値
 PExm = 0.4;                 %筋肉の部位ごとの特性値
 
 tic
+%プログラムの高速化のために事前割り当て
+datai_x = zeros(timeNum(1),y*t*h);
+datai_y = datai_x;
+datai_z = datai_x;
+con_x = datai_x;
+con_y = datai_x;
+con_z = datai_x;
+Fm_xFm_y = datai_x;
+Fm_z = datai_x;
+Fn_x = datai_x;
+Fn_y = datai_x;
+Fn_z = datai_x;
+Fsl_x = datai_x;
+Fsl_y = datai_x;
+Fsl_z = datai_x;
+Fsr_x = datai_x;
+Fsr_y = datai_x;
+Fsr_z = datai_x;
+FsSum_x = datai_x;
+FsSum_y = datai_x;
+FsSum_z = datai_x;
+Fv_x = datai_x;
+Fv_y = datai_x;
+Fv_z = datai_x;
+vis_x = datai_x;
+vis_y = datai_x;
+vis_z = datai_x;
+vn_x = datai_x;
+vn_y = datai_x;
+vn_z = datai_x;
+Mr_x = datai_x;
+Mr_y = datai_x;
+Mr_z = datai_x;
+F_fib = zeros(timeNum(1),y*t*(h-1));
+f_Lce = F_fib;
+% f_Vce = F_fib;
+HillActive = F_fib;
+HillPassive = F_fib;
+length_per = F_fib;
+Vce = F_fib;
+Fs_x = zeros(timeNum(1),y*t*h,6);
+Fs_y = Fs_x;
+Fs_z = Fs_x;
+length_s = zeros(timeNum(1),seNum(1));
+lengthen_s = length_s;
+springF = length_s;
 
 for i=1:timeNum(1)%iの値は時間ステップ
     i
-    
+    %プログラムの高速化のための事前割り当て
+    fvA = zeros(3,tetraNum(2)+((tetraNum(1)/5-1)*tetraNum(2)));
+    fvB = fvA;
+    fvC = fvA;
+    fvD = fvA;
     %初期座標
     if i==1
         datai_x(i,1:pointNum)=data0(:,1).';  %i時における各点の座標
@@ -71,6 +122,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
         datai_x(i,1:y*t)=data0(1:y*t,1);
         datai_y(i,1:y*t)=data0(1:y*t,2);
         datai_z(i,1:y*t)=data0(1:y*t,3);
+        
         %強制変位を与える面
         for k=1:y*t
             datai_x(i,(pointNum(1)-k+1))=data(i,3*(y*t-k)+1);  %x座標
@@ -95,11 +147,18 @@ for i=1:timeNum(1)%iの値は時間ステップ
         datai_z(i,(y*t+1):(pointNum(1)-y*t))=datai_z(i-1,(y*t+1):(pointNum(1)-y*t))+dt*vn_z(i,(y*t+1):(pointNum(1)-y*t));
         
         % 骨(怪しい，csvやdefmuscleでx方向とy方向を統一していないから，間違えが起こりそう)
+        %         for j=1:h-1
+        %             for k=1:y
+        %                 if datai_y(i,y*(t-1)+k+j*y*t)>data0(y*(t-1)+k+j*y*t,2)
+        %                     datai_y(i,y*(t-1)+k+j*y*t)=data0(y*(t-1)+k+j*y*t,2);
+        %                 end
+        %             end
+        %         end
+        %                 %骨に付着と仮定
         for j=1:h-1
-            for k=1:y
-                if datai_y(i,y*(t-1)+k+j*y*t)>data0(y*(t-1)+k+j*y*t,2)
-                    datai_y(i,y*(t-1)+k+j*y*t)=data0(y*(t-1)+k+j*y*t,2);
-                end
+            for k=1:t
+%                 datai_x(i,1+t*(k-1)+j*y*t)=data0(1+t*(k-1)+j*y*t,1);
+                datai_x(i,t*k+j*y*t)=data0(t*k+j*y*t,1);
             end
         end
         
@@ -115,7 +174,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
     end
     
     %ばね要素長さ,seで対応付けられたすべての質点のキョリを計算
-    for s=1:seNum(1);
+    for s=1:seNum(1)
         length_s(i,s)=sqrt((datai_x(i,se(s,3))-datai_x(i,se(s,2)))^2+(datai_y(i,se(s,3))-datai_y(i,se(s,2)))^2+(datai_z(i,se(s,3))-datai_z(i,se(s,2)))^2);
         lengthen_s(i,s)=length_s(i,s)-length_s(1,s);%自然長からの長さ
         
@@ -124,13 +183,13 @@ for i=1:timeNum(1)%iの値は時間ステップ
             se(s,5)=0;
         elseif datai_y(i,se(s,3))-datai_y(i,se(s,2))==0&&datai_x(i,se(s,3))-datai_x(i,se(s,2))<=0
             se(s,5)=pi;
-        elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))==0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))>=0;
+        elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))==0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))>=0
             se(s,5)=pi/2;
         elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))==0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))<=0
             se(s,5)=-pi/2;
-        elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))<=0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))>=0;
+        elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))<=0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))>=0
             se(s,5)=atan((datai_y(i,se(s,3))-datai_y(i,se(s,2)))/(datai_x(i,se(s,3))-datai_x(i,se(s,2))))+pi;   %角度β(xy平面)
-        elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))<=0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))<=0;
+        elseif datai_x(i,se(s,3))-datai_x(i,se(s,2))<=0&&datai_y(i,se(s,3))-datai_y(i,se(s,2))<=0
             se(s,5)=atan((datai_y(i,se(s,3))-datai_y(i,se(s,2)))/(datai_x(i,se(s,3))-datai_x(i,se(s,2))))+pi;
         else
             se(s,5)=atan((datai_y(i,se(s,3))-datai_y(i,se(s,2)))/(datai_x(i,se(s,3))-datai_x(i,se(s,2))));
@@ -141,7 +200,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
     
     
     %% 慣性力
-    if i==1;
+    if i==1
         Mr_x(i,1:pointNum(1))=0;
         Mr_y(i,1:pointNum(1))=0;
         Mr_z(i,1:pointNum(1))=0;
@@ -152,24 +211,24 @@ for i=1:timeNum(1)%iの値は時間ステップ
     end
     
     %% 収縮力(筋力)
-    
-    Fm_x(i,1:pointNum(1))=0;    Fm_y(i,1:pointNum(1))=0;    Fm_z(i,1:pointNum(1))=0;
+    %
+    %     Fm_x(i,1:pointNum(1))=0;    Fm_y(i,1:pointNum(1))=0;    Fm_z(i,1:pointNum(1))=0;
     
     
     %% ばね力(横)
-    for n=1:6;%seの種類の数，縦，横，高さ，xy平面，yz平面，xz平面
-        for j=1:seNum(1);
-            if n==6;
+    for n=1:6%seの種類の数，縦，横，高さ，xy平面，yz平面，xz平面
+        for j=1:seNum(1)
+            if n==6
                 ul(1,n)=seNum(1);
             end
-            if se(j,1)>n-1;
+            if se(j,1)>n-1
                 ul(1,n)=j-1;  %upper limit
                 break
             end
         end
     end
     
-    for s=1:seNum(1);
+    for s=1:seNum(1)
         springF(i,s)=springk*lengthen_s(i,s);
         
         if se(s,1)==2  %筋線維だけHillのモデル計算
@@ -208,18 +267,48 @@ for i=1:timeNum(1)%iの値は時間ステップ
                 springF(i,s)=HillActive(i,s-ul(1,2))+HillPassive(i,s-ul(1,2));%受動的な力と能動的な力の和
             end
         end
-        
     end
+    
+    %         if se(s,1)==2  %筋線維だけHillのモデル計算
+    %
+    %             Lcesh(1,s-ul(1,2)) = 0.5 * length_s(1,s);
+    %             f_Lce(i,s-ul(1,2)) = exp(-( lengthen_s(i,s)/Lcesh(1,s-ul(1,2))).^2);%占部さんの修論の式(3.31)
+    %             if i == 1
+    %                 Vce(i,s-ul(1,2)) = 0;
+    %             else
+    %                 Vce(i,s-ul(1,2)) = -(length_s(i,s) - length_s(i-1,s))/0.1;
+    %             end
+    %             Vvm = 6 * length_s(1,s);%V_vmは最大等尺性収縮中の最大速度でV_vm=6?l_ce
+    %             Vmax(1,s-ul(1,2)) = Vvm .* ( 1 - Ver .* (1 - alpha * f_Lce(i,s-ul(1,2))));
+    %
+    %             %占部さんの修論式(3-32)
+    %             if Vce(i,s-ul(1,2)) <= -Vmax(1,s-ul(1,2))
+    %                 f_Vce(i,s-ul(1,2)) = 0;
+    %             elseif (Vce(i,s-ul(1,2)) > -Vmax(1,s-ul(1,2)))  &&  (Vce(i,s-ul(1,2)) < 0)
+    %                 f_Vce(i,s-ul(1,2)) = (Vsh * Vmax(1,s-ul(1,2)) + Vsh * Vce(i,s-ul(1,2))) / (Vsh *Vmax(1,s-ul(1,2)) - Vce(i,s-ul(1,2)));
+    %             elseif Vce(i,s-ul(1,2)) >= 0
+    %                 f_Vce(i,s-ul(1,2)) = (Vsh * Vshl * Vmax(1,s-ul(1,2)) + Vml * Vce(i,s-ul(1,2))) / (Vsh * Vshl * Vmax(1,s-ul(1,2)) + Vce(i,s-ul(1,2)));%vmax抜けてない?
+    %                 %             else
+    %                 %                 f_Vce(i,s-ul(1,2)) = 0
+    %             end
+    %
+    %             length_per(i,s-ul(1,2)) =lengthen_s(i,s)/ length_s(1,s);
+    %             HillPassive(i,s-ul(1,2)) =0;
+    %             HillActive(i,s-ul(1,2)) = 0; %占部さんの修論，式(3-29)
+    %             springF(i,s)=0;
+    %         end
+    %     end
+    
     
     %%質点ごとのspringforce
     %分布範囲
-    for n=1:6;
+    for n=1:6
         Fs_x(i,1:pointNum(1),n)=0;
         Fs_y(i,1:pointNum(1),n)=0;
         Fs_z(i,1:pointNum(1),n)=0;
         senum=(1:seNum);
         
-        if n==1;
+        if n==1
             Fsl_x(i,1:pointNum(1))=0;
             Fsl_y(i,1:pointNum(1))=0;
             Fsl_z(i,1:pointNum(1))=0;
@@ -241,9 +330,9 @@ for i=1:timeNum(1)%iの値は時間ステップ
                 end
                 match_lNum=senum(match_l);   %同じ質点を有する三角Noを抽出
                 sN=size(match_lNum);
-                if sN(2)>1;
+                if sN(2)>1
                     matchse_l=[];
-                    for s=1:sN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
+                    for s=1:sN(2)   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
                         matchse_l(1,s)=springF(i,match_lNum(1,s))*cos(se(match_lNum(1,s),4))*cos(se(match_lNum(1,s),5));  %x
                         matchse_l(2,s)=springF(i,match_lNum(1,s))*cos(se(match_lNum(1,s),4))*sin(se(match_lNum(1,s),5));   %y
                         matchse_l(3,s)=springF(i,match_lNum(1,s))*sin(se(match_lNum(1,s),4));   %z
@@ -274,9 +363,9 @@ for i=1:timeNum(1)%iの値は時間ステップ
                 end
                 match_rNum=senum(match_r);   %同じ質点を有する三角Noを抽出
                 sN=size(match_rNum);
-                if sN(2)>1;
+                if sN(2)>1
                     matchse_r=[];
-                    for s=1:sN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
+                    for s=1:sN(2)   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
                         matchse_r(1,s)=-springF(i,match_rNum(1,s))*cos(se(match_rNum(1,s),4))*cos(se(match_rNum(1,s),5));  %x
                         matchse_r(2,s)=-springF(i,match_rNum(1,s))*cos(se(match_rNum(1,s),4))*sin(se(match_rNum(1,s),5));   %y
                         matchse_r(3,s)=-springF(i,match_rNum(1,s))*sin(se(match_rNum(1,s),4));   %z
@@ -319,9 +408,9 @@ for i=1:timeNum(1)%iの値は時間ステップ
                 end
                 match_lNum=senum(match_l);   %同じ質点を有する三角Noを抽出
                 sN=size(match_lNum);
-                if sN(2)>1;
+                if sN(2)>1
                     matchse_l=[];
-                    for s=1:sN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
+                    for s=1:sN(2)  %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
                         matchse_l(1,s)=springF(i,match_lNum(1,s))*cos(se(match_lNum(1,s),4))*cos(se(match_lNum(1,s),5));  %x
                         matchse_l(2,s)=springF(i,match_lNum(1,s))*cos(se(match_lNum(1,s),4))*sin(se(match_lNum(1,s),5));   %y
                         matchse_l(3,s)=springF(i,match_lNum(1,s))*sin(se(match_lNum(1,s),4));   %z
@@ -352,9 +441,9 @@ for i=1:timeNum(1)%iの値は時間ステップ
                 end
                 match_rNum=senum(match_r);   %同じ質点を有する三角Noを抽出
                 sN=size(match_rNum);
-                if sN(2)>1;
+                if sN(2)>1
                     matchse_r=[];
-                    for s=1:sN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
+                    for s=1:sN(2)   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
                         matchse_r(1,s)=-springF(i,match_rNum(1,s))*cos(se(match_rNum(1,s),4))*cos(se(match_rNum(1,s),5));  %x
                         matchse_r(2,s)=-springF(i,match_rNum(1,s))*cos(se(match_rNum(1,s),4))*sin(se(match_rNum(1,s),5));   %y
                         matchse_r(3,s)=-springF(i,match_rNum(1,s))*sin(se(match_rNum(1,s),4));   %z
@@ -387,7 +476,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
     con_y(i,1:pointNum(1))=-1*conk*(datai_y(i,1:pointNum(1))-datai_y(1,1:pointNum(1)));
     con_z(i,1:pointNum(1))=-1*conk*(datai_z(i,1:pointNum(1))-datai_z(1,1:pointNum(1)));
     
-    if i==1;
+    if i==1
         vis_x(i,1:pointNum(1))=0;
         vis_y(i,1:pointNum(1))=0;
         vis_z(i,1:pointNum(1))=0;
@@ -399,9 +488,9 @@ for i=1:timeNum(1)%iの値は時間ステップ
     
     %% 体積保存力
     
-    for j=1:tetraNum(1)/5;
-        for k=1:tetraNum(2);
-            if i==1;
+    for j=1:tetraNum(1)/5
+        for k=1:tetraNum(2)
+            if i==1
                 V0(k+(j-1)*tetraNum(2),1)=1/6*abs(dot(cross((data0(tetra(3+5*(j-1),k),:).'-data0(tetra(2+5*(j-1),k),:).'),(data0(tetra(4+5*(j-1),k),:).'-data0(tetra(2+5*(j-1),k),:).')),((data0(tetra(5+5*(j-1),k),:).'-data0(tetra(2+5*(j-1),k),:).'))));
             end
             %fvAを求めるのに必要なﾍﾞｸﾄﾙ
@@ -423,7 +512,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
             V(k+(j-1)*tetraNum(2),1)=1/6*abs(dot(cross((-1)*Vec2(:,3),Vec1(:,2)),Vec2(:,2)));
             
             %体積時系列
-            if data(i,3)-data(1,3)>0;    %こっちが標準
+            if data(i,3)-data(1,3)>0    %こっちが標準
                 fvA(:,k+(j-1)*tetraNum(2))=1/6*kv*(V(k+(j-1)*tetraNum(2),1)-V0(k+(j-1)*tetraNum(2),1))/V0(k+(j-1)*tetraNum(2),1)^2*cross(Vec2(:,1),Vec1(:,1));
                 fvB(:,k+(j-1)*tetraNum(2))=1/6*kv*(V(k+(j-1)*tetraNum(2),1)-V0(k+(j-1)*tetraNum(2),1))/V0(k+(j-1)*tetraNum(2),1)^2*cross(Vec1(:,2),Vec2(:,2));
                 fvC(:,k+(j-1)*tetraNum(2))=1/6*kv*(V(k+(j-1)*tetraNum(2),1)-V0(k+(j-1)*tetraNum(2),1))/V0(k+(j-1)*tetraNum(2),1)^2*cross(Vec2(:,3),Vec1(:,3));
@@ -440,16 +529,18 @@ for i=1:timeNum(1)%iの値は時間ステップ
     FvA(1:pointNum(1),1:3)=0;
     tetranum=(1:tetraNum(1)*tetraNum(2)/5);
     %a行b列目のnode番号を有するtetraNumに1
-    for m=1:tetraNum(1)/5;
-        for k=1:tetraNum(2);
-            for j=1:tetraNum(1)/5;
+    for m=1:tetraNum(1)/5
+        for k=1:tetraNum(2)
+            for j=1:tetraNum(1)/5
                 matchA(1+(j-1)*tetraNum(2):tetraNum(2)*j,1)=tetra(2+5*(j-1),:).'==tetra(2+5*(m-1),k);    %同じ質点のある三角Noが　ある場合：1 ない：0
             end
             matchAnum=tetranum(matchA);   %同じ質点を有する三角Noを抽出
             mN=size(matchAnum);      %1つ以上なら同じ質点を有する三角Noがほかにあるということ
-            if mN(2)>1;
+            if mN(2)>1
                 matchf_A=[];
-                for n=1:mN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
+                %プログラム高速化のための事前割り当て
+                matcn_A = zeros(3, mN(2));
+                for n=1:mN(2)   %matchnumに入っている三角Noのxy方向力をmatchf_Aに表示
                     matchf_A(1,n)=fvA(1,matchAnum(1,n));   %x
                     matchf_A(2,n)=fvA(2,matchAnum(1,n));   %y
                     matchf_A(3,n)=fvA(3,matchAnum(1,n));   %z
@@ -469,16 +560,18 @@ for i=1:timeNum(1)%iの値は時間ステップ
     
     FvB(1:pointNum(1),1:3)=0;
     %a行b列目のnode番号を有するtetraNumに1
-    for m=1:tetraNum(1)/5;
-        for k=1:tetraNum(2);
-            for j=1:tetraNum(1)/5;
+    for m=1:tetraNum(1)/5
+        for k=1:tetraNum(2)
+            for j=1:tetraNum(1)/5
                 matchB(1+(j-1)*tetraNum(2):tetraNum(2)*j,1)=tetra(3+5*(j-1),:).'==tetra(3+5*(m-1),k);    %同じ質点のある三角Noが　ある場合：1 ない：0
             end
             matchBnum=tetranum(matchB);   %同じ質点を有する三角Noを抽出
             mN=size(matchBnum);      %1つ以上なら同じ質点を有する三角Noがほかにあるということ
-            if mN(2)>1;
+            if mN(2)>1
                 matchf_B=[];
-                for n=1:mN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Bに表示
+                %プログラム高速化のための事前割り当て
+                matcn_B = zeros(3, mN(2));
+                for n=1:mN(2)  %matchnumに入っている三角Noのxy方向力をmatchf_Bに表示
                     matchf_B(1,n)=fvB(1,matchBnum(1,n));   %x
                     matchf_B(2,n)=fvB(2,matchBnum(1,n));   %y
                     matchf_B(3,n)=fvB(3,matchBnum(1,n));   %z
@@ -498,16 +591,18 @@ for i=1:timeNum(1)%iの値は時間ステップ
     
     FvC(1:pointNum(1),1:3)=0;
     %a行b列目のnode番号を有するtetraNumに1
-    for m=1:tetraNum(1)/5;
-        for k=1:tetraNum(2);
-            for j=1:tetraNum(1)/5;
+    for m=1:tetraNum(1)/5
+        for k=1:tetraNum(2)
+            for j=1:tetraNum(1)/5
                 matchC(1+(j-1)*tetraNum(2):tetraNum(2)*j,1)=tetra(4+5*(j-1),:).'==tetra(4+5*(m-1),k);    %同じ質点のある三角Noが　ある場合：1 ない：0
             end
             matchCnum=tetranum(matchC);   %同じ質点を有する三角Noを抽出
             mN=size(matchCnum);      %1つ以上なら同じ質点を有する三角Noがほかにあるということ
-            if mN(2)>1;
+            if mN(2)>1
                 matchf_C=[];
-                for n=1:mN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Cに表示
+                %プログラム高速化のための事前割り当て
+                matcn_C = zeros(3, mN(2));
+                for n=1:mN(2)   %matchnumに入っている三角Noのxy方向力をmatchf_Cに表示
                     matchf_C(1,n)=fvC(1,matchCnum(1,n));   %x
                     matchf_C(2,n)=fvC(2,matchCnum(1,n));   %y
                     matchf_C(3,n)=fvC(3,matchCnum(1,n));   %z
@@ -528,16 +623,18 @@ for i=1:timeNum(1)%iの値は時間ステップ
     
     FvD(1:pointNum(1),1:3)=0;
     %a行b列目のnode番号を有するtetraNumに1
-    for m=1:tetraNum(1)/5;
-        for k=1:tetraNum(2);
-            for j=1:tetraNum(1)/5;
+    for m=1:tetraNum(1)/5
+        for k=1:tetraNum(2)
+            for j=1:tetraNum(1)/5
                 matchD(1+(j-1)*tetraNum(2):tetraNum(2)*j,1)=tetra(5+5*(j-1),:).'==tetra(5+5*(m-1),k);    %同じ質点のある三角Noが　ある場合：1 ない：0
             end
             matchDnum=tetranum(matchD);   %同じ質点を有する三角Noを抽出
             mN=size(matchDnum);      %1つ以上なら同じ質点を有する三角Noがほかにあるということ
-            if mN(2)>1;
+            if mN(2)>1
                 matchf_D=[];
-                for n=1:mN(2);   %matchnumに入っている三角Noのxy方向力をmatchf_Dに表示
+                %高速化のための事前割り当て
+                matcn_D = zeros(3, mN(2));
+                for n=1:mN(2)   %matchnumに入っている三角Noのxy方向力をmatchf_Dに表示
                     matchf_D(1,n)=fvD(1,matchDnum(1,n));   %x
                     matchf_D(2,n)=fvD(2,matchDnum(1,n));   %y
                     matchf_D(3,n)=fvD(3,matchDnum(1,n));   %z
@@ -556,7 +653,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
     end
     
     
-    if i==1;
+    if i==1
         Fv_x(i,1:pointNum(1))=0;
         Fv_y(i,1:pointNum(1))=0;
         Fv_z(i,1:pointNum(1))=0;
@@ -566,6 +663,12 @@ for i=1:timeNum(1)%iの値は時間ステップ
         Fv_y(i,1:pointNum(1))=FvA(1:pointNum(1),2).'+FvB(1:pointNum(1),2).'+FvC(1:pointNum(1),2).'+FvD(1:pointNum(1),2).';
         Fv_z(i,1:pointNum(1))=FvA(1:pointNum(1),3).'+FvB(1:pointNum(1),3).'+FvC(1:pointNum(1),3).'+FvD(1:pointNum(1),3).';
         
+        %         checkFv_x(i,1:pointNum(1)) = abs(Fv_x(i,1:pointNum(1))) > 5*abs(Fv_x(i-1,1:pointNum(1)));
+        %         checkFv_y(i,1:pointNum(1)) = abs(Fv_y(i,1:pointNum(1))) > 5*abs(Fv_y(i-1,1:pointNum(1)));
+        %         checkFv_z(i,1:pointNum(1)) = abs(Fv_z(i,1:pointNum(1))) > 5*abs(Fv_z(i-1,1:pointNum(1)));
+        %         Fv_x(i, checkFv_x(i,1:pointNum(1))) = Fv_x(i-1, checkFv_x(i,1:pointNum(1)));
+        %         Fv_y(i, checkFv_y(i,1:pointNum(1))) = Fv_y(i-1, checkFv_y(i,1:pointNum(1)));
+        %         Fv_z(i, checkFv_z(i,1:pointNum(1))) = Fv_z(i-1, checkFv_z(i,1:pointNum(1)));
     end
     
     %0：横　1：縦　2：高さ　3：xy平面斜め　4：xz平面斜め　5：yz平面斜め　6：空間斜め
@@ -578,6 +681,14 @@ for i=1:timeNum(1)%iの値は時間ステップ
     vn_y(i,1:pointNum(1))=vn_y(i,1:pointNum(1))+Fn_y(i,1:pointNum(1))/2*dt;
     vn_z(i,1:pointNum(1))=vn_z(i,1:pointNum(1))+Fn_z(i,1:pointNum(1))/2*dt;
     
+    %     if i > 1
+    %     checkVn_x(i,1:pointNum(1)) = abs(vn_x(i,1:pointNum(1))) > 5*abs(vn_x(i-1,1:pointNum(1)));
+    %     checkVn_y(i,1:pointNum(1)) = abs(vn_y(i,1:pointNum(1))) > 5*abs(vn_y(i-1,1:pointNum(1)));
+    %     checkVn_z(i,1:pointNum(1)) = abs(vn_z(i,1:pointNum(1))) > 5*abs(vn_z(i-1,1:pointNum(1)));
+    %     vn_x(i, checkVn_x(i,1:pointNum(1))) = vn_x(i-1, checkVn_x(i,1:pointNum(1)));
+    %     vn_y(i, checkVn_y(i,1:pointNum(1))) = vn_y(i-1, checkVn_y(i,1:pointNum(1)));
+    %     vn_z(i, checkVn_z(i,1:pointNum(1))) = vn_z(i-1, checkVn_z(i,1:pointNum(1)));
+    %     end
     %% 描画
     % if i==1||mod(i,10)==0;
     %     if i==1;
@@ -703,12 +814,12 @@ end
 toc
 F_fib=springF(:,ul(1,2)+1:ul(1,2)+y*t*(h-1));
 
-datai_x_name=strcat('output\', muscle_name, '_data_x.csv')
-datai_y_name=strcat('output\', muscle_name, '_data_y.csv')
-datai_z_name=strcat('output\', muscle_name, '_data_z.csv')
-csvwrite(datai_x_name,datai_x)
-csvwrite(datai_y_name,datai_y)
-csvwrite(datai_z_name,datai_z)
+datai_x_name=strcat('output\', muscle_name, '_data_x.csv');
+datai_y_name=strcat('output\', muscle_name, '_data_y.csv');
+datai_z_name=strcat('output\', muscle_name, '_data_z.csv');
+csvwrite(datai_x_name,datai_x);
+csvwrite(datai_y_name,datai_y);
+csvwrite(datai_z_name,datai_z);
 
 
 % v = VideoWriter('model_3d_7.avi');
