@@ -6,18 +6,6 @@ warning;
 muscleNames = loadMuscleName();
 muscle_name = [muscleNames{1}]
 
-% Fn_x(i,:)=FsSum_x(i,:)+Fv_x(i,:)+Mr_x(i,:)+con_x(i,:)+vis_x(i,:);
-% Fn_y(i,:)=FsSum_y(i,:)+Fv_y(i,:)+Mr_y(i,:)+con_y(i,:)+vis_y(i,:);
-% Fn_z(i,:)=FsSum_z(i,:)+Fv_z(i,:)+Mr_z(i,:)+con_z(i,:)+vis_z(i,:);
-% v = VideoWriter('test');
-% videoName = ['video\',muscle_name, '_volume_activr=0.1_dt=10^-4_c=600_kv300',];
-% v = VideoWriter(videoName);
-% v.Quality=50;
-
-% open(v);
-% writeVideo(v,Frame);
-% close(v);
-
 FsSumTotal = abs(FsSum_x) +  abs(FsSum_y) + abs(FsSum_z);
 FvTotal = abs(Fv_x) + abs(Fv_y) + abs(Fv_z);
 MrTotal = abs(Mr_x) + abs(Mr_y) + abs(Mr_z);
@@ -27,15 +15,24 @@ visTotal = abs(vis_x) + abs(vis_y) + abs(vis_z);
 HillActive = abs(HillActive);
 HillPassive = abs(HillPassive);
 
+% FsSumTotal = FsSum_x +  FsSum_y + FsSum_z;
+% FvTotal = Fv_x + Fv_y + Fv_z;
+% MrTotal = Mr_x + Mr_y + Mr_z;
+% conTotal = con_x + con_y + con_z;
+% visTotal = vis_x + vis_y + vis_z;
+% % FgTotal = Fg_x + Fg_y + Fg_z;
+% HillActive = HillActive;
+% HillPassive = HillPassive;
+
 FsSumAve = mean(FsSumTotal');
 FvAve = mean(FvTotal');
 MrAve = mean(MrTotal');
 conAve = mean(conTotal');
 visAve = mean(visTotal');
 % FgTotal = mean(FgTotal');
-HillActiveAve = mean(HillActive')*1000;
-HillPassiveAve = mean(HillPassive')*1000;
-
+HillActiveAve = mean(HillActive');
+HillPassiveAve = mean(HillPassive');
+% 
 plot(FsSumAve,'r');
 hold on
 plot(FvAve,'k');
@@ -44,11 +41,18 @@ plot(conAve,'b');
 plot(visAve,'c');
 % plot(FgTotal,'c-');
 plot(HillActiveAve,'m');
+hold on
 plot(HillPassiveAve,'y');
 legend('FsSum','Fv','Mr','con','vis','HillActive','HillPassive');
 xlabel('Time step');
 ylabel('Force');
 hold off
+
+HillForce = HillActiveAve + HillPassiveAve;
+
+HillForceName=strcat('output\', muscle_name, '_HillForce.csv');
+csvwrite(HillForceName,HillForce.');
+
 % springkArray = 1000*ones(1,957);
 % fileNameSprigk = ['C:\Users\kou_0\OneDrive\ドキュメント\研究matlab\parameter\',muscle_name, '_springk.csv'];
 % csvwrite(fileNameSprigk, springkArray);

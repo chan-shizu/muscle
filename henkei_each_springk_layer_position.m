@@ -19,13 +19,13 @@ h=divisionMuscle(3);
 % kv=a(2,1)*50000;   %85
 
 kv=0.25;    %0.25
-scale = 10^3;
+scale = 1*10^(6);
 correctAlpha = 0;
 
 mass=5*10^(-3);
 gravityG = -9.8*500*0;%重力加速度 [m/s^2]
-conk=600;%60
-conc=600;%60
+conk=60;%60
+conc=60;%60
 bNum=(y-1)*(t-1)*(h-1)/8;   %blockNumber"C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\data_test_square.csv"
 %-9.98031度回転させる(筋肉ごとに代わる)
 file_name_data = strcat("muscle\data_", muscle_name, ".csv");%"data_rot_h.csv"
@@ -35,7 +35,6 @@ file_name_data0 = strcat("muscle\", muscle_name, "_min_final.csv");%"data0_rot_h
 file_name_se = strcat("parameter\", muscle_name, "_se.csv");
 file_name_tetra = strcat("parameter\", muscle_name, "_tetra.csv");
 fileNameSprigk = ['parameter\',muscle_name, '_springk.csv'];
-
 
 data= csvread(file_name_data, 0, 0)*scale;%/1000;
 data0=csvread(file_name_data0, 0, 0)*scale;%/1000;
@@ -47,8 +46,8 @@ timeNum = size(data);%時間ステップ
 pointNum = size(data0);
 seNum = size(se);
 tetraNum = size(tetra);
-dt=1*10^(-3); %10^(-3)
-% dt = 1*10^(-1);
+% dt=1*10^(-4); %10^(-3)
+dt = 2.0/timeNum(1);
 
 % Hillモデル計算の準備
 Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
@@ -56,7 +55,7 @@ Vsh = 0.3;
 Vshl = 0.23;
 Vml = 1.3;
 Ver = 0.5;
-alpha = 0.1;%1*0.1;              %筋の最大活性化レベルを表す変数
+alpha = 0.2;%1*0.1;         %筋の最大活性化レベルを表す変数
 PEsh = 10;                  %筋肉の部位ごとの特性値
 PExm = 0.4;                 %筋肉の部位ごとの特性値
 
@@ -601,7 +600,7 @@ for i=1:timeNum(1)%iの値は時間ステップ
             Vec2(:,4)=[datai_x(i,tetra(3+5*(j-1),k));datai_y(i,tetra(3+5*(j-1),k));datai_z(i,tetra(3+5*(j-1),k))]-[datai_x(i,tetra(4+5*(j-1),k));datai_y(i,tetra(4+5*(j-1),k));datai_z(i,tetra(4+5*(j-1),k))];   %B-C
             
             V(k+(j-1)*tetraNum(2),1)=1/6*abs(dot(cross((-1)*Vec2(:,3),Vec1(:,2)),Vec2(:,2)));
-            
+            Vec1(:,1)
             %体積時系列
             if data(i,3)-data(1,3)>0    %こっちが標準,それぞれの四面体ごとに体積保存係数を設定
                 fvA(:,k+(j-1)*tetraNum(2))=1/6*springkVPk(2,k+(j-1)*tetraNum(2))*(V(k+(j-1)*tetraNum(2),1)-V0(k+(j-1)*tetraNum(2),1))/V0(k+(j-1)*tetraNum(2),1)^2*cross(Vec2(:,1),Vec1(:,1));
@@ -772,44 +771,44 @@ for i=1:timeNum(1)%iの値は時間ステップ
     %     end
     
     %% 座屈防止のための矯正力
-    fivePointAverageDatax = datai_x(i,:);
-    fivePointAverageDatay = datai_y(i,:);
-    for j=1:h-2
-        for  n =1:y-2
-            FCorrectx(1+n+j*y*t) = correctAlpha*((datai_x(i,1+n+(j-1)*y*t) - datai_x(i,1+n+j*y*t))^3 + (datai_x(i,1+n+(j+1)*y*t) -  datai_x(i,1+n+j*y*t))^3);
-            FCorrecty(1+n+j*y*t) = correctAlpha*((datai_y(i,1+n+(j-1)*y*t) - datai_y(i,1+n+j*y*t))^3 + (datai_y(i,1+n+(j+1)*y*t) -  datai_y(i,1+n+j*y*t))^3);
-        end
-    end
-    
-    for j=1:h-2
-        for  n =1:y-2
-            FCorrectx(1+n+(t-1)*y+j*y*t) = correctAlpha*((datai_x(i,1+n+(t-1)*y+(j-1)*y*t) - datai_x(1+n+j*y*t))^3 + (datai_x(i,1+n+(t-1)*y+(j+1)*y*t) -  datai_x(1+n+j*y*t))^3);
-            FCorrecty(1+n+(t-1)*y+j*y*t) = correctAlpha*((datai_y(i,1+n+(t-1)*y+(j-1)*y*t) - datai_y(1+n+j*y*t))^3 + (datai_y(i,1+n+(t-1)*y+(j+1)*y*t) -  datai_y(1+n+j*y*t))^3);
-        end
-    end
-    
-    for n=1:h-2
-        for j =1:t-2
-            %                     fivePointAverageDatax(1+j*y+n*y*t) = (datai_x(i,1+j*y+(n-1)*y*t) + datai_x(i,1+j*y+(n+1)*y*t))/2;
-            %                     fivePointAverageDatay(1+j*y+n*y*t) = (datai_y(i,1+j*y+(n-1)*y*t) + datai_y(i,1+j*y+(n+1)*y*t))/2;
-            FCorrectx(1+j*y+n*y*t) = correctAlpha*((datai_x(i,1+j*y+(n-1)*y*t) - datai_x(1+n+j*y*t))^3 + (datai_x(i,1+j*y+(n+1)*y*t) -  datai_x(1+n+j*y*t))^3);
-            FCorrecty(1+j*y+n*y*t) = correctAlpha*((datai_y(i,1+j*y+(n-1)*y*t) - datai_y(1+n+j*y*t))^3 + (datai_y(i,1+j*y+(n+1)*y*t) -  datai_y(1+n+j*y*t))^3);
-        end
-    end
-    
-    for n=1:h-2
-        for j =1:t-2
-            %                     fivePointAverageDatax(y+j*y+n*y*t) = (datai_x(i,y+j*y+(n-1)*y*t) + datai_x(i,y+j*y+(n+1)*y*t))/2;
-            %                     fivePointAverageDatay(y+j*y+n*y*t) = (datai_y(i,y+j*y+(n-1)*y*t) + datai_y(i,y+j*y+(n+1)*y*t))/2;
-            FCorrectx(1+j*y+n*y*t) = correctAlpha*((datai_x(i,y+j*y+(n-1)*y*t) - datai_x(1+n+j*y*t))^3 + (datai_x(i,y+j*y+(n+1)*y*t) -  datai_x(1+n+j*y*t))^3);
-            FCorrecty(1+j*y+n*y*t) = correctAlpha*((datai_y(i,y+j*y+(n-1)*y*t) - datai_y(1+n+j*y*t))^3 + (datai_y(i,y+j*y+(n+1)*y*t) -  datai_y(1+n+j*y*t))^3);
-        end
-    end
+%     fivePointAverageDatax = datai_x(i,:);
+%     fivePointAverageDatay = datai_y(i,:);
+%     for j=1:h-2
+%         for  n =1:y-2
+%             FCorrectx(1+n+j*y*t) = correctAlpha*((datai_x(i,1+n+(j-1)*y*t) - datai_x(i,1+n+j*y*t))^3 + (datai_x(i,1+n+(j+1)*y*t) -  datai_x(i,1+n+j*y*t))^3);
+%             FCorrecty(1+n+j*y*t) = correctAlpha*((datai_y(i,1+n+(j-1)*y*t) - datai_y(i,1+n+j*y*t))^3 + (datai_y(i,1+n+(j+1)*y*t) -  datai_y(i,1+n+j*y*t))^3);
+%         end
+%     end
+%     
+%     for j=1:h-2
+%         for  n =1:y-2
+%             FCorrectx(1+n+(t-1)*y+j*y*t) = correctAlpha*((datai_x(i,1+n+(t-1)*y+(j-1)*y*t) - datai_x(1+n+j*y*t))^3 + (datai_x(i,1+n+(t-1)*y+(j+1)*y*t) -  datai_x(1+n+j*y*t))^3);
+%             FCorrecty(1+n+(t-1)*y+j*y*t) = correctAlpha*((datai_y(i,1+n+(t-1)*y+(j-1)*y*t) - datai_y(1+n+j*y*t))^3 + (datai_y(i,1+n+(t-1)*y+(j+1)*y*t) -  datai_y(1+n+j*y*t))^3);
+%         end
+%     end
+%     
+%     for n=1:h-2
+%         for j =1:t-2
+%             %                     fivePointAverageDatax(1+j*y+n*y*t) = (datai_x(i,1+j*y+(n-1)*y*t) + datai_x(i,1+j*y+(n+1)*y*t))/2;
+%             %                     fivePointAverageDatay(1+j*y+n*y*t) = (datai_y(i,1+j*y+(n-1)*y*t) + datai_y(i,1+j*y+(n+1)*y*t))/2;
+%             FCorrectx(1+j*y+n*y*t) = correctAlpha*((datai_x(i,1+j*y+(n-1)*y*t) - datai_x(1+n+j*y*t))^3 + (datai_x(i,1+j*y+(n+1)*y*t) -  datai_x(1+n+j*y*t))^3);
+%             FCorrecty(1+j*y+n*y*t) = correctAlpha*((datai_y(i,1+j*y+(n-1)*y*t) - datai_y(1+n+j*y*t))^3 + (datai_y(i,1+j*y+(n+1)*y*t) -  datai_y(1+n+j*y*t))^3);
+%         end
+%     end
+%     
+%     for n=1:h-2
+%         for j =1:t-2
+%             %                     fivePointAverageDatax(y+j*y+n*y*t) = (datai_x(i,y+j*y+(n-1)*y*t) + datai_x(i,y+j*y+(n+1)*y*t))/2;
+%             %                     fivePointAverageDatay(y+j*y+n*y*t) = (datai_y(i,y+j*y+(n-1)*y*t) + datai_y(i,y+j*y+(n+1)*y*t))/2;
+%             FCorrectx(1+j*y+n*y*t) = correctAlpha*((datai_x(i,y+j*y+(n-1)*y*t) - datai_x(1+n+j*y*t))^3 + (datai_x(i,y+j*y+(n+1)*y*t) -  datai_x(1+n+j*y*t))^3);
+%             FCorrecty(1+j*y+n*y*t) = correctAlpha*((datai_y(i,y+j*y+(n-1)*y*t) - datai_y(1+n+j*y*t))^3 + (datai_y(i,y+j*y+(n+1)*y*t) -  datai_y(1+n+j*y*t))^3);
+%         end
+%     end
     
     
     %% 質点に加わる力と速度の算出
-    Fn_x(i,:)=FsSum_x(i,:)+Fv_x(i,:)+Mr_x(i,:)+con_x(i,:)+vis_x(i,:)+FCorrectx(i,:);%Fg_x(i,:)
-    Fn_y(i,:)=FsSum_y(i,:)+Fv_y(i,:)+Mr_y(i,:)+con_y(i,:)+vis_y(i,:)+FCorrecty(i,:);%Fg_y(i,:)
+    Fn_x(i,:)=FsSum_x(i,:)+Fv_x(i,:)+Mr_x(i,:)+con_x(i,:)+vis_x(i,:);%Fg_x(i,:)+FCorrectx(i,:)
+    Fn_y(i,:)=FsSum_y(i,:)+Fv_y(i,:)+Mr_y(i,:)+con_y(i,:)+vis_y(i,:);%Fg_y(i,:)+FCorrecty(i,:)
     Fn_z(i,:)=FsSum_z(i,:)+Fv_z(i,:)+Mr_z(i,:)+con_z(i,:)+vis_z(i,:);%+Fg_z(i,:)
     
     vn_x(i,1:pointNum(1))=vn_x(i,1:pointNum(1))+Fn_x(i,1:pointNum(1))/2*dt;

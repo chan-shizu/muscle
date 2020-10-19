@@ -7,7 +7,7 @@ muscleNames = loadMuscleName();
 muscle_name = [muscleNames{1}];
 
 E=5*10^4; %file:///C:/Users/%E5%8D%A0%E9%83%A8%E3%80%80%E9%BA%BB%E9%87%8C%E5%AD%90/Downloads/nagano_05-02-05%20(1).pdf
-v=0.49;
+v=0.49;%0.49;
 %k=8500;
 %k=8237;
 %ks=166.7558;
@@ -24,7 +24,7 @@ h=divisionMuscle(3);
 file_name_data0 = ['muscle\',muscle_name, '_min_final.csv'];
 % file_name_data0 = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\", muscle_name,"_min_final.csv")
 % file_name_data0 = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\data0_arm_rot.csv")
-data0=csvread(file_name_data0, 0, 0)*50;%*50; %mmからmに変換
+data0=csvread(file_name_data0, 0, 0);%*50; %mmからmに変換
 
 pointNum = size(data0);
 dt=1*10^(-3);
@@ -96,36 +96,56 @@ csvwrite(file_name_se, se);
 %% tetra
 for j=1:(t-1)*(h-1)
     for i=1:y-1
-        tetra(1+5*(j-1),1+10*(i-1):10*i)=i;
+%         tetra(1+5*(j-1),1+10*(i-1):10*i)=i;
+        tetra(1+5*(j-1),1+5*(i-1):5*i)=i;
     end
 end
 
 %横に作っていく
 for i=1:y-1
-    tetra(2,1+10*(i-1))=1+(i-1);     tetra(3,1+10*(i-1))=1+y+y*t+(i-1);   tetra(4,1+10*(i-1))=1+y*t+(i-1);     tetra(5,1+10*(i-1))=2+y*t+(i-1);
-    tetra(2,2+10*(i-1))=2+y+(i-1);   tetra(3,2+10*(i-1))=2+y+y*t+(i-1);   tetra(4,2+10*(i-1))=1+y+y*t+(i-1);   tetra(5,2+10*(i-1))=2+y*t+(i-1);
-    tetra(2,3+10*(i-1))=1+(i-1);     tetra(3,3+10*(i-1))=2+(i-1);         tetra(4,3+10*(i-1))=2+y+(i-1);       tetra(5,3+10*(i-1))=2+y*t+(i-1);
-    tetra(2,4+10*(i-1))=1+(i-1);     tetra(3,4+10*(i-1))=1+y+y*t+(i-1);   tetra(4,4+10*(i-1))=2+y+(i-1);       tetra(5,4+10*(i-1))=1+y+(i-1);
-    tetra(2,5+10*(i-1))=1+(i-1);     tetra(3,5+10*(i-1))=2+y+(i-1);       tetra(4,5+10*(i-1))=1+y+y*t+(i-1);   tetra(5,5+10*(i-1))=2+y*t+(i-1);
-    tetra(2,6+10*(i-1))=2+(i-1);     tetra(3,6+10*(i-1))=1+y*t+(i-1);     tetra(4,6+10*(i-1))=2+y*t+(i-1);     tetra(5,6+10*(i-1))=2+y+y*t+(i-1);
-    tetra(2,7+10*(i-1))=1+y+(i-1);   tetra(3,7+10*(i-1))=1+y+y*t+(i-1);   tetra(4,7+10*(i-1))=1+y*t+(i-1);     tetra(5,7+10*(i-1))=2+y+y*t+(i-1);
-    tetra(2,8+10*(i-1))=1+(i-1);     tetra(3,8+10*(i-1))=2+(i-1);         tetra(4,8+10*(i-1))=1+y+(i-1);       tetra(5,8+10*(i-1))=1+y*t+(i-1);
-    tetra(2,9+10*(i-1))=2+(i-1);     tetra(3,9+10*(i-1))=2+y+(i-1);       tetra(4,9+10*(i-1))=1+y+(i-1);       tetra(5,9+10*(i-1))=2+y+y*t+(i-1);
-    tetra(2,10+10*(i-1))=2+(i-1);    tetra(3,10+10*(i-1))=1+y+(i-1);      tetra(4,10+10*(i-1))=1+y*t+(i-1);    tetra(5,10+10*(i-1))=2+y+y*t+(i-1);
-end
+    % 占部モデル
+    tetra(2,1+10*(i-1))=1+(i-1);     tetra(3,1+10*(i-1))=1+y+y*t+(i-1);   tetra(4,1+10*(i-1))=1+y*t+(i-1);     tetra(5,1+10*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,13,10,11
+    tetra(2,2+10*(i-1))=2+y+(i-1);   tetra(3,2+10*(i-1))=2+y+y*t+(i-1);   tetra(4,2+10*(i-1))=1+y+y*t+(i-1);   tetra(5,2+10*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて5,14,13,11
+    tetra(2,3+10*(i-1))=1+(i-1);     tetra(3,3+10*(i-1))=2+(i-1);         tetra(4,3+10*(i-1))=2+y+(i-1);       tetra(5,3+10*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,2,5,11
+    tetra(2,4+10*(i-1))=1+(i-1);     tetra(3,4+10*(i-1))=1+y+y*t+(i-1);   tetra(4,4+10*(i-1))=2+y+(i-1);       tetra(5,4+10*(i-1))=1+y+(i-1);   %3x3x3のモデルにおいて1,13,5,4
+    tetra(2,5+10*(i-1))=1+(i-1);     tetra(3,5+10*(i-1))=2+y+(i-1);       tetra(4,5+10*(i-1))=1+y+y*t+(i-1);   tetra(5,5+10*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,5,13,11
+    tetra(2,6+10*(i-1))=2+(i-1);     tetra(3,6+10*(i-1))=1+y*t+(i-1);     tetra(4,6+10*(i-1))=2+y*t+(i-1);     tetra(5,6+10*(i-1))=2+y+y*t+(i-1);%3x3x3のモデルにおいて2,10,11,14
+    tetra(2,7+10*(i-1))=1+y+(i-1);   tetra(3,7+10*(i-1))=1+y+y*t+(i-1);   tetra(4,7+10*(i-1))=1+y*t+(i-1);     tetra(5,7+10*(i-1))=2+y+y*t+(i-1);%3x3x3のモデルにおいて4,13,10,14
+    tetra(2,8+10*(i-1))=1+(i-1);     tetra(3,8+10*(i-1))=2+(i-1);         tetra(4,8+10*(i-1))=1+y+(i-1);       tetra(5,8+10*(i-1))=1+y*t+(i-1); %3x3x3のモデルにおいて1,2,4,10
+    tetra(2,9+10*(i-1))=2+(i-1);     tetra(3,9+10*(i-1))=2+y+(i-1);       tetra(4,9+10*(i-1))=1+y+(i-1);       tetra(5,9+10*(i-1))=2+y+y*t+(i-1);%3x3x3のモデルにおいて2,5,4,14
+    tetra(2,10+10*(i-1))=2+(i-1);    tetra(3,10+10*(i-1))=1+y+(i-1);      tetra(4,10+10*(i-1))=1+y*t+(i-1);    tetra(5,10+10*(i-1))=2+y+y*t+(i-1);%3x3x3のモデルにおいて2,4,10,14
 
+    %5分割(パターンA)
+%     tetra(2,1+5*(i-1))=1+(i-1);     tetra(4,1+5*(i-1))=1+y*t+(i-1);     tetra(3,1+5*(i-1))=1+y+y*t+(i-1);       tetra(5,1+5*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,10,13,11
+%     tetra(2,2+5*(i-1))=2+y+(i-1);   tetra(3,2+5*(i-1))=2+y+y*t+(i-1);   tetra(4,2+5*(i-1))=1+y+y*t+(i-1);   tetra(5,2+5*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて5,14,13,11
+%     tetra(2,3+5*(i-1))=1+(i-1);     tetra(3,3+5*(i-1))=2+(i-1);         tetra(4,3+5*(i-1))=2+y+(i-1);       tetra(5,3+5*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,2,5,11
+%     tetra(2,4+5*(i-1))=1+(i-1);     tetra(3,4+5*(i-1))=1+y+y*t+(i-1);   tetra(4,4+5*(i-1))=2+y+(i-1);       tetra(5,4+5*(i-1))=1+y+(i-1);   %3x3x3のモデルにおいて1,13,5,4
+%     tetra(2,5+5*(i-1))=1+(i-1);     tetra(5,5+5*(i-1))=2+y*t+(i-1);     tetra(3,5+5*(i-1))=2+y+(i-1);       tetra(4,5+5*(i-1))=1+y+y*t+(i-1);  %3x3x3のモデルにおいて1,11,5,13
+    
+    %6分割(パターンB)
+%     tetra(2,1+6*(i-1))=1+(i-1);     tetra(3,1+6*(i-1))=2+(i-1);         tetra(4,1+6*(i-1))=2+y+(i-1);       tetra(5,1+6*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,2,5,11
+%     tetra(2,2+6*(i-1))=1+(i-1);     tetra(3,2+6*(i-1))=2+y+(i-1);       tetra(4,2+6*(i-1))=1+y*t+(i-1);     tetra(5,2+6*(i-1))=2+y*t+(i-1); %3x3x3のモデルにおいて1,5,10,11
+%     tetra(2,3+6*(i-1))=2+y+(i-1);   tetra(3,3+6*(i-1))=1+y*t+(i-1);     tetra(4,3+6*(i-1))=2+y*t+(i-1);     tetra(5,3+6*(i-1))=2+y+y*t+(i-1);%3x3x3のモデルにおいて5,10,11,14
+%     tetra(2,4+6*(i-1))=1+(i-1);     tetra(3,4+6*(i-1))=1+y+y*t+(i-1);   tetra(4,4+6*(i-1))=2+y+(i-1);       tetra(5,4+6*(i-1))=1+y+(i-1);   %3x3x3のモデルにおいて1,13,5,4
+%     tetra(2,5+6*(i-1))=1+(i-1);     tetra(3,5+6*(i-1))=2+y+(i-1);       tetra(4,5+6*(i-1))=1+y+y*t+(i-1);   tetra(5,5+6*(i-1))=1+y*t+(i-1); %3x3x3のモデルにおいて1,5,13,11
+%     tetra(2,6+6*(i-1))=2+y+(i-1);   tetra(3,6+6*(i-1))=1+y+y*t+(i-1);   tetra(4,6+6*(i-1))=1+y*t+(i-1);     tetra(5,6+6*(i-1))=2+y+y*t+(i-1);%3x3x3のモデルにおいて4,13,10,14
+       
+end
 
 %縦
 for i=1:t-2
     tetra(2+5*i:5+5*i,1:10*(y-1))=tetra(2+5*(i-1):5+5*(i-1),1:10*(y-1))+y;
+%     tetra(2+5*i:5+5*i,1:5*(y-1))=tetra(2+5*(i-1):5+5*(i-1),1:5*(y-1))+y;
 end
 
 %高さ
 for i=1:h-2
     for k=1:t-1
         tetra(2+5*(k-1)+5*(t-1)*i:5+5*(k-1)+5*(t-1)*i,1:10*(y-1))=tetra(2+5*(k-1)+5*(t-1)*(i-1):5+5*(k-1)+5*(t-1)*(i-1),1:10*(y-1))+y*t;
+%         tetra(2+5*(k-1)+5*(t-1)*i:5+5*(k-1)+5*(t-1)*i,1:5*(y-1))=tetra(2+5*(k-1)+5*(t-1)*(i-1):5+5*(k-1)+5*(t-1)*(i-1),1:5*(y-1))+y*t;
     end
 end
+
 tetraNum=size(tetra);
 file_name_tetra = ['parameter\',muscle_name, '_tetra.csv'];
 % file_name_tetra = strcat("C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\parameter\", muscle_name, "_tetra.csv")
@@ -254,9 +274,11 @@ for j=1:tetraNum(1)/5
         end
     end
 end
-
+% plot(V0);
 springAllayAve = sum(springkAllay');% ./ (seCount-1);
 springkVPk(1,1:seNum(1)) = springAllayAve;%x20
+springkVPk(1,1:seNum(1)) = mean(springkVPk(1,:)); 
+springkVPk(2,1:tetraNum(1)/5*tetraNum(2)) = mean(springkVPk(2,:));
 
 %% ばね定数,体積保存係数の値を手動で設定する場合
 % for n=1:6%seの種類の数，縦，横，高さ，xy平面，yz平面，xz平面
@@ -279,12 +301,8 @@ springkVPk(1,1:seNum(1)) = springAllayAve;%x20
 %     springkVPk(1,ul(n-1):ul(n)) = settingAllay(n);
 %     end
 % end
-% 
-% springkVPk(2,1:tetraNum(1)/5*tetraNum(2)) = 0.25;%springkVPk(2,1:tetraNum(1)/5*tetraNum(2))*10;
-% springkVPk(3,1) = mean(springkVPk(1,:) 
-% springkVPk(4,1) = mean(springkVPk(2,:)) 
-springkVPk(1,1:seNum(1)) = mean(springkVPk(1,:)); 
-springkVPk(2,1:tetraNum(1)/5*tetraNum(2)) = mean(springkVPk(2,:));
+
+% springkVPk(2,1:tetraNum(1)/5*tetraNum(2)) = 0.000000;%4.0*10^(-5);%springkVPk(2,1:tetraNum(1)/5*tetraNum(2))*10;
 
 fileNameSprigk = ['parameter\',muscle_name, '_springk.csv'];
 writematrix(springkVPk,fileNameSprigk);

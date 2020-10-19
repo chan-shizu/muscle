@@ -22,6 +22,138 @@ datai_x=csvread(data_x_name, 0, 0);
 datai_y=csvread(data_y_name, 0, 0);
 datai_z=csvread(data_z_name, 0, 0);
 
+checkRotation = false;%true or forse
+
+if checkRotation == 1
+    %% zŽ²‚Ü‚í‚è‚É‰ñ“]
+    alpha = pi()/6;
+    beta = pi()/3;
+    convertData = zeros(p_t*p_y,3*p_h);
+    
+    average_lower_x = mean(datai_x(1,1:p_t*p_y));
+    average_lower_y = mean(datai_y(1,1:p_t*p_y));
+    average_lower_z = mean(datai_z(1,1:p_t*p_y));
+    center_of_rotation = [1.0*average_lower_x,...
+        1.0*average_lower_y,...
+        1.0*average_lower_z];
+    %
+    Coordinate_transformed_z = [cos(alpha) sin(alpha) 0 ; -sin(alpha) cos(alpha) 0; 0 0 1];%zŽ²‚Ü‚í‚è‚Ì‰ñ“]
+    Coordinate_transformed_y = [cos(pi/2-beta) 0 -sin(pi/2-beta);0 1 0;sin(pi/2-beta) 0 cos(pi/2-beta)];%yŽ²‚Ü‚í‚è‚Ì‰ñ“]
+    Coordinate_transformed_file = zeros(p_y*p_t,p_h*3);
+    
+    for i = 1:timeNum(1)
+        i
+        for n=1:p_h
+            convertData(1:p_t*p_y,3*(n-1)+1) = datai_x(i,(n-1)*(p_t*p_y)+1:n*(p_t*p_y));
+            convertData(1:(p_t*p_y),3*(n-1)+2) = datai_y(i,(n-1)*(p_t*p_y)+1:n*(p_t*p_y));
+            convertData(1:(p_t*p_y),3*(n-1)+3) = datai_z(i,(n-1)*(p_t*p_y)+1:n*(p_t*p_y));
+        end
+        
+        
+        
+        for n=1:p_t*p_y
+            for j=1:p_h
+                x_y_z = convertData(n,1+3*(j-1):3*j) - center_of_rotation;
+                Coordinate_transformed_file(n,1+3*(j-1):3*j) = Coordinate_transformed_z * x_y_z.' + center_of_rotation.';
+            end
+        end
+        
+%         xx = zeros(1, p_t*p_y*p_h);
+%         yy= zeros(1, p_t*p_y*p_h);
+%         zz = zeros(1, p_t*p_y*p_h);
+%         xx_2 = zeros(1, p_t*p_y*p_h);
+%         yy_2 = zeros(1, p_t*p_y*p_h);
+%         zz_2 = zeros(1, p_t*p_y*p_h);
+%         
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 xx(p_h*(i-1)+j) = convertData(i,3*(j-1)+1);
+%             end
+%         end
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 yy(p_h*(i-1)+j) = convertData(i,3*(j-1)+2);
+%             end
+%         end
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 zz(p_h*(i-1)+j) = convertData(i,3*(j-1)+3);
+%             end
+%         end
+%         
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 xx_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+1);
+%             end
+%         end
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 yy_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+2);
+%             end
+%         end
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 zz_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+3);
+%             end
+%         end
+%         
+%         f1 = figure;
+%         plot3(xx(1,:), yy(1,:), zz(1,:), 'b.' );
+%         xlabel('x')
+%         ylabel('y')
+%         zlabel('z')
+%         
+%         f2 = figure;
+%         plot3(xx_2(1,:), yy_2(1,:), zz_2(1,:), 'b.' );
+%         xlabel('x')
+%         ylabel('y')
+%         zlabel('z')
+%         axis equal
+        
+        
+        %% yŽ²‚Ü‚í‚è‚É‰ñ“]
+        for n=1:p_t*p_y
+            for j=1:p_h
+                x_y_z = Coordinate_transformed_file(n,1+3*(j-1):3*j) - center_of_rotation;
+                Coordinate_transformed_file(n,1+3*(j-1):3*j) = Coordinate_transformed_y * x_y_z.' + center_of_rotation.';
+            end
+        end
+        
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 xx3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+1);
+%             end
+%         end
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 yy3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+2);
+%             end
+%         end
+%         for i=1:p_t*p_y
+%             for j=1:p_h
+%                 zz3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+3);
+%             end
+%         end
+%         
+%         f3 = figure;
+%         plot3(xx3(1,:), yy3(1,:), zz3(1,:), 'b.' );
+%         xlabel('x')
+%         ylabel('y')
+%         zlabel('z')
+%         axis equal
+        
+        for n = 1:p_h
+            datai_x(i,(n-1)*p_y*p_t+1:n*p_y*p_t) = Coordinate_transformed_file(1:p_y*p_t,(n-1)*3+1);
+            datai_y(i,(n-1)*p_y*p_t+1:n*p_y*p_t) = Coordinate_transformed_file(1:p_y*p_t,(n-1)*3+2);
+            datai_z(i,(n-1)*p_y*p_t+1:n*p_y*p_t) = Coordinate_transformed_file(1:p_y*p_t,(n-1)*3+3);
+        end
+    end
+    %     CoordinateTransformedFileTable = array2table(Coordinate_transformed_file);
+    %     fileText = fileText(:, 1:3);
+    %     CoordinateTransformedFileTable = [fileText CoordinateTransformedFileTable];
+    %     writetable(CoordinateTransformedFileTable, file_name_readcsv, 'WriteVariableNames',false);
+end
+
 for n=1:6
     for j=1:seNum(1)
         if n==6
@@ -35,11 +167,11 @@ for n=1:6
 end
 
 for i=1:timeNum(1)
-    if i==1||mod(i,5)==0%10
+    if i==1||mod(i,2)==0%10
         if i==1
             l=1;
         else
-            l=i/5;%10
+            l=i/2;%10
         end
         
         
@@ -186,22 +318,22 @@ for i=1:timeNum(1)
         ylabel('y')
         zlabel('z')
         axis equal
-%         %         xlim([-0.1*(10^8),0.25*(10^8)]);
-%            xlim([-150000,350000]);
-%          xlim([-0.2*(10^8),0.25*(10^8)]);
-%         % %         ylim([14.15*(10^8),14.50*(10^8)]);
-%            ylim([-150000,350000]);
-%          ylim([-0.2*(10^8),0.25*(10^8)]);
-%         % %         zlim([1.20*(10^8),1.55*(10^8)]);
-%            zlim([-200000,1000000]);
-%          zlim([1.0*(10^4), 9.0*(10^4)]);
+        %         %         xlim([-0.1*(10^8),0.25*(10^8)]);
+        %            xlim([-150000,350000]);
+        %          xlim([-0.2*(10^8),0.25*(10^8)]);
+        %         % %         ylim([14.15*(10^8),14.50*(10^8)]);
+        %            ylim([-150000,350000]);
+        %          ylim([-0.2*(10^8),0.25*(10^8)]);
+        %         % %         zlim([1.20*(10^8),1.55*(10^8)]);
+        %            zlim([-200000,1000000]);
+%                    zlim([70, 350]);
         Frame(l) = getframe(1);
         hold off
     end
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_x50_average',];
+videoName = ['video\',muscle_name, '_ver3_gyaku'];
 v = VideoWriter(videoName);
 v.Quality=50;
 
