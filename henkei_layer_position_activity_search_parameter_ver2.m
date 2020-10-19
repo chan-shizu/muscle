@@ -1,4 +1,5 @@
 %function area_mive=2Darea():
+% 筋肉の挙動をシミュレーション
 clc;
 clear;
 warning('on','all');
