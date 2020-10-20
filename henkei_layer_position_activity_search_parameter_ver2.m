@@ -17,17 +17,7 @@ if powerFlag == 1
 %     muscleFiberFInput = zeros(300,2019);
 end
 
-
-%入力
-% a=csvread('a_r.csv', 0, 0);
-% springk=a(1,1)/10000;    %1900
-% springk = 8983400/10000;
-% springk=1000;  %100
-% kv = 0.10731*50000;
-% kv=a(2,1)*50000;   %85
-
 kv=0.25;    %0.25
-scale = 1;
 mass=0.015;%5*10^(-3);
 
 gravityG = -9.8*500*0;%重力加速度 [m/s^2]
@@ -44,8 +34,8 @@ file_name_tetra = strcat("parameter\", muscle_name, "_tetra.csv");
 fileNameSprigk = ['parameter\',muscle_name, '_springk.csv'];
 fileNameActivityLevel = ['parameter\',muscle_name, '_ActivityLevel.csv'];
 
-data= csvread(file_name_data, 0, 0)*scale;%/1000;
-data0=csvread(file_name_data0, 0, 0)*scale;%/1000;
+data= csvread(file_name_data, 0, 0);%/1000;
+data0=csvread(file_name_data0, 0, 0);%/1000;
 se=csvread(file_name_se, 0, 0);
 tetra=csvread(file_name_tetra, 0, 0);
 springkVPk = readmatrix(fileNameSprigk);%各要素のばね定数と体積保存力
@@ -56,7 +46,7 @@ timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
 ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-ActivityLevel(1:end) = 0.0;%0.2;
+ActivityLevel(1:end) = 0.2;%0.2;
 
 pointNum = size(data0);
 seNum = size(se);
@@ -65,7 +55,10 @@ dt=1*10^(-3); %10^(-3)
 % dt = 2.0/timeNum(1);
 
 % Hillモデル計算の準備
-Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+d = 17; %各筋肉の番号，MuscleParam～っていうcsvファイルを参照
+Mscl = csvread('MuscleParam_27m.csv', 2, 1);   
+Fmax = 0.7*10^6*Mscl(d, 10)/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出) 
+% Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 Vsh = 0.3;
 Vshl = 0.23;
 Vml = 1.3;

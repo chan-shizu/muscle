@@ -5,6 +5,7 @@ checkSurface = true;
 checkMusclemake = true;
 checkArrange = true;
 checkParameter = true;
+checkSwallowing = true;
 
 %% rotation
 if checkRotation == 1
@@ -28,5 +29,10 @@ end
 
 %% parameter
 if checkParameter == 1
-    parameter();
+    parameter_test();
+end
+
+%% swallowing, 筋肉の伸縮、活性度を指定
+if checkSwallowing == 1
+    swallowing_data();
 end
