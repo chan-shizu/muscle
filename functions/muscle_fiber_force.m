@@ -3,7 +3,7 @@ f_Lce(i,s-ul(1,2)) = exp(-( lengthen_s(i,s)/Lcesh(1,s-ul(1,2))).^2);%占部さ�
 if i == 1
     Vce(i,s-ul(1,2)) = 0;
 else
-    %                 Vce(i,s-ul(1,2)) = -(length_s(i,s) - length_s(i-1,s))/0.1;%0.1ではなくdtでは?
+    %                 Vce(i,s-ul(1,2)) = -(length_s(i,s) - length_s(i-1,s))/0.1;%0.1ではなくdtでは
     Vce(i,s-ul(1,2)) = -(length_s(i,s) - length_s(i-1,s))/dt;
 end
 Vvm = 6 * length_s(1,s);%V_vmは最大等尺性収縮中の最大速度でV_vm=6?l_ce
