@@ -6,7 +6,8 @@ warning;
 muscleNames = loadMuscleName();
 muscle_name = [muscleNames{1}];
 
-E=5*10^4; %file:///C:/Users/%E5%8D%A0%E9%83%A8%E3%80%80%E9%BA%BB%E9%87%8C%E5%AD%90/Downloads/nagano_05-02-05%20(1).pdf
+% E=5*10^4; %file:///C:/Users/%E5%8D%A0%E9%83%A8%E3%80%80%E9%BA%BB%E9%87%8C%E5%AD%90/Downloads/nagano_05-02-05%20(1).pdf
+E=1.02*10^5; %http://cfd-duo.riken.go.jp/cbms-mp/logon/data/Biceps%20brachii.pdf
 v=0.49;%0.49;
 %k=8500;
 %k=8237;

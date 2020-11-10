@@ -6,7 +6,7 @@ dataPath = 'obj\';
 %筋の名前を指定する
 objList = [
     {
-    'L_Digastric_Anterior'
+    'biceps'
     };
 ];
 %dataPathの中にある、objListにある名前のobjファイルを追加していく

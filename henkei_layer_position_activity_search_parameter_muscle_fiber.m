@@ -15,8 +15,8 @@ y=divisionMuscle(1);
 t=divisionMuscle(2);
 h=divisionMuscle(3);
 
-powerFlag = 0;
-if powerFlag == 0
+powerFlag = 2;
+if powerFlag == 2
     muscleFiberFInput = readmatrix("D:\Documents\matlabまとめ\研究matlab\muscleFiberPower.csv");
     %     muscleFiberFInput = zeros(300,2019);
 end
@@ -44,7 +44,7 @@ timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
 ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-ActivityLevel(1:end) = 0.0;%0.2;
+ActivityLevel(1:end) = 0.2;%0.2;
 
 pointNum = size(data0);
 seNum = size(se);
@@ -56,7 +56,8 @@ dt=1*10^(-3); %10^(-3)
 % d = 17; %各筋肉の番号，MuscleParam～っていうcsvファイルを参照
 % Mscl = csvread('MuscleParam_27m.csv', 2, 1);
 PCSA = str2num(muscleNames{muscleNumber,3});
-Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+% Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+Fmax = 0.7*10^6*PCSA/y/t; % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 % Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 Vsh = 0.3;
 Vshl = 0.23;
@@ -70,14 +71,14 @@ tic
 make_variable();
 
 c = str2num(muscleNames{muscleNumber,2});
-searchListK = [0.1 0.5 1.0];
+muscleActivateLevel = [1];
 searchListC = [c];
-sizeSeachListK = size(searchListK);
+sizeSeachListK = size(muscleActivateLevel);
 sizeSeachListC = size(searchListC);
 
-for searchNK=1:sizeSeachListK(2)
-    ActivityLevel(1:end)=searchListK(searchNK);
-    conc = searchListC(1);
+for searchMA=1:sizeSeachListC(2)
+    ActivityLevel(1:end)=muscleActivateLevel(1);
+    conc = searchListC(searchMA);
     
     for i=1:timeNum(1)%iの値は時間ステップ
         i
@@ -88,7 +89,7 @@ for searchNK=1:sizeSeachListK(2)
         fvD = fvA;
 
         % 逆運動学の場合
-        if powerFlag == 0
+        if (powerFlag == 0) || (powerFlag == 1)
             i
             % 固定面と強制変位面の座標を指定
             specify_coordinates();
@@ -161,8 +162,11 @@ for searchNK=1:sizeSeachListK(2)
             % 筋張力を各方向(x,y,z)に分配する
             distribute_muscle_fiber_force();
             
+        elseif powerFlag == 1
+            distribute_muscle_fiber_force_ver2
+            
         % 順運動学の場合
-        else
+        elseif powerFlag == 2
             for k=ul(2)+1:ul(3)
                 
                 % こちらが入力した筋張力を各方向(x,y,z)に分配する
@@ -216,7 +220,7 @@ for searchNK=1:sizeSeachListK(2)
             Fv_z(i,1:pointNum(1)) = FvA(1:pointNum(1),3).'+FvB(1:pointNum(1),3).'+FvC(1:pointNum(1),3).'+FvD(1:pointNum(1),3).';
             
             %z軸方向の力を0にして，x,y軸方向に分散(xy平面に写像)
-            if powerFlag == 0
+            if (powerFlag == 0) || (powerFlag == 1)
                 FvTotal(i,1:pointNum(1)) = sqrt(Fv_x(i,1:pointNum(1)).^2 + Fv_y(i,1:pointNum(1)).^2 + Fv_z(i,1:pointNum(1)).^2);
                 alpha = atan(Fv_y(i,1:pointNum(1)) ./ Fv_x(i,1:pointNum(1)));
                 alpha = alpha + pi.*(Fv_x(i,1:pointNum(1)) < 0);
@@ -244,10 +248,10 @@ for searchNK=1:sizeSeachListK(2)
     volumeRatio(end-1:end)=[]
     figure1 = figure()
     plot([1:(i-2)],volumeRatio);
-    %         graphName = "springk=" + searchListK(searchNK) + "_c=" + searchListC(searchNC);
-    graphName = "Number" + searchNK;
+    %         graphName = "springk=" + muscleActivateLevel(searchMA) + "_c=" + searchListC(searchNC);
+    graphName = "Number" + searchMA;
     saveas(figure1,graphName);
-    VolumeHistroy(searchNK) = volumeRatio(end);
+    VolumeHistroy(searchMA) = volumeRatio(end);
     volumeRatio = [];
     close
 end
@@ -262,7 +266,7 @@ csvwrite(datai_y_name,datai_y);
 csvwrite(datai_z_name,datai_z);
 csvwrite("VolumeHistory.csv",VolumeHistroy);
 
-if powerFlag == 0
+if (powerFlag == 0) || (powerFlag == 1)
     csvwrite("muscleFiberPower.csv",muscleFiberF);
 end
 

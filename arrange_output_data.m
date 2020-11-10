@@ -4,7 +4,11 @@ clear;
 warning('on','all');
 warning;
 muscleNames = loadMuscleName();
-muscle_name = [muscleNames{1}];
+prompt = '上腕二頭筋なら1, オトガイ舌骨筋なら2, 茎突舌骨筋なら3, 顎二腹筋前腹なら4, 顎二腹筋後腹なら5を押してね';
+muscleNumber = inputdlg(prompt,...
+             'choose muscle', [1 50])
+muscleNumber = str2num(muscleNumber{1})
+muscle_name = [muscleNames{muscleNumber,1}];
 file_name_data_x = ['output\',muscle_name, '_data_x.csv'];
 file_name_data_y = ['output\',muscle_name, '_data_y.csv'];
 file_name_data_z = ['output\',muscle_name, '_data_z.csv'];

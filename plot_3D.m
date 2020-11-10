@@ -1,7 +1,11 @@
 clc;
 clear;
 muscleNames = loadMuscleName();
-muscle_name = [muscleNames{1}];
+prompt = 'è„òrìÒì™ãÿÇ»ÇÁ1, ÉIÉgÉKÉCê„çúãÿÇ»ÇÁ2, åsìÀê„çúãÿÇ»ÇÁ3, ä{ìÒï†ãÿëOï†Ç»ÇÁ4, ä{ìÒï†ãÿå„ï†Ç»ÇÁ5ÇâüÇµÇƒÇÀ';
+muscleNumber = inputdlg(prompt,...
+             'choose muscle', [1 50])
+muscleNumber = str2num(muscleNumber{1})
+muscle_name = [muscleNames{muscleNumber,1}];
 %se= csvread('se_arm.csv', 0, 0);
 se_name = ['parameter\',muscle_name, '_se.csv'];
 se= csvread(se_name, 0, 0);
@@ -58,57 +62,57 @@ if checkRotation == 1
             end
         end
         
-%         xx = zeros(1, p_t*p_y*p_h);
-%         yy= zeros(1, p_t*p_y*p_h);
-%         zz = zeros(1, p_t*p_y*p_h);
-%         xx_2 = zeros(1, p_t*p_y*p_h);
-%         yy_2 = zeros(1, p_t*p_y*p_h);
-%         zz_2 = zeros(1, p_t*p_y*p_h);
-%         
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 xx(p_h*(i-1)+j) = convertData(i,3*(j-1)+1);
-%             end
-%         end
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 yy(p_h*(i-1)+j) = convertData(i,3*(j-1)+2);
-%             end
-%         end
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 zz(p_h*(i-1)+j) = convertData(i,3*(j-1)+3);
-%             end
-%         end
-%         
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 xx_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+1);
-%             end
-%         end
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 yy_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+2);
-%             end
-%         end
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 zz_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+3);
-%             end
-%         end
-%         
-%         f1 = figure;
-%         plot3(xx(1,:), yy(1,:), zz(1,:), 'b.' );
-%         xlabel('x')
-%         ylabel('y')
-%         zlabel('z')
-%         
-%         f2 = figure;
-%         plot3(xx_2(1,:), yy_2(1,:), zz_2(1,:), 'b.' );
-%         xlabel('x')
-%         ylabel('y')
-%         zlabel('z')
-%         axis equal
+        %         xx = zeros(1, p_t*p_y*p_h);
+        %         yy= zeros(1, p_t*p_y*p_h);
+        %         zz = zeros(1, p_t*p_y*p_h);
+        %         xx_2 = zeros(1, p_t*p_y*p_h);
+        %         yy_2 = zeros(1, p_t*p_y*p_h);
+        %         zz_2 = zeros(1, p_t*p_y*p_h);
+        %
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 xx(p_h*(i-1)+j) = convertData(i,3*(j-1)+1);
+        %             end
+        %         end
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 yy(p_h*(i-1)+j) = convertData(i,3*(j-1)+2);
+        %             end
+        %         end
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 zz(p_h*(i-1)+j) = convertData(i,3*(j-1)+3);
+        %             end
+        %         end
+        %
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 xx_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+1);
+        %             end
+        %         end
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 yy_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+2);
+        %             end
+        %         end
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 zz_2(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+3);
+        %             end
+        %         end
+        %
+        %         f1 = figure;
+        %         plot3(xx(1,:), yy(1,:), zz(1,:), 'b.' );
+        %         xlabel('x')
+        %         ylabel('y')
+        %         zlabel('z')
+        %
+        %         f2 = figure;
+        %         plot3(xx_2(1,:), yy_2(1,:), zz_2(1,:), 'b.' );
+        %         xlabel('x')
+        %         ylabel('y')
+        %         zlabel('z')
+        %         axis equal
         
         
         %% yé≤Ç‹ÇÌÇËÇ…âÒì]
@@ -119,28 +123,28 @@ if checkRotation == 1
             end
         end
         
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 xx3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+1);
-%             end
-%         end
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 yy3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+2);
-%             end
-%         end
-%         for i=1:p_t*p_y
-%             for j=1:p_h
-%                 zz3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+3);
-%             end
-%         end
-%         
-%         f3 = figure;
-%         plot3(xx3(1,:), yy3(1,:), zz3(1,:), 'b.' );
-%         xlabel('x')
-%         ylabel('y')
-%         zlabel('z')
-%         axis equal
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 xx3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+1);
+        %             end
+        %         end
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 yy3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+2);
+        %             end
+        %         end
+        %         for i=1:p_t*p_y
+        %             for j=1:p_h
+        %                 zz3(p_h*(i-1)+j) = Coordinate_transformed_file(i,3*(j-1)+3);
+        %             end
+        %         end
+        %
+        %         f3 = figure;
+        %         plot3(xx3(1,:), yy3(1,:), zz3(1,:), 'b.' );
+        %         xlabel('x')
+        %         ylabel('y')
+        %         zlabel('z')
+        %         axis equal
         
         for n = 1:p_h
             datai_x(i,(n-1)*p_y*p_t+1:n*p_y*p_t) = Coordinate_transformed_file(1:p_y*p_t,(n-1)*3+1);
@@ -326,14 +330,14 @@ for i=1:timeNum(1)
         %          ylim([-0.2*(10^8),0.25*(10^8)]);
         %         % %         zlim([1.20*(10^8),1.55*(10^8)]);
         %            zlim([-200000,1000000]);
-%                    zlim([70, 350]);
+        %                    zlim([70, 350]);
         Frame(l) = getframe(1);
         hold off
     end
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_c=50_MA=0.2'];
+videoName = ['video\',muscle_name, '_MA=1.0_new_èáìÆóÕäw'];
 v = VideoWriter(videoName);
 v.Quality=50;
 
