@@ -337,7 +337,7 @@ for i=1:timeNum(1)
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_MA=1.0_conneted'];
+videoName = ['video\',muscle_name, '_MA=1_conneted_400‚Ü‚Å_E=5x10^4'];
 v = VideoWriter(videoName);
 v.Quality=50;
 
