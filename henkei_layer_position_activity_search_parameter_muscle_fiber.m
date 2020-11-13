@@ -15,7 +15,7 @@ y=divisionMuscle(1);
 t=divisionMuscle(2);
 h=divisionMuscle(3);
 
-powerFlag = 2;
+powerFlag = 0;
 if powerFlag == 2
     muscleFiberFInput = readmatrix("D:\Documents\matlab‚Ü‚Æ‚ß\Œ¤‹†matlab\muscleFiberPower.csv");
     %     muscleFiberFInput = zeros(300,2019);
