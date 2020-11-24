@@ -79,7 +79,7 @@ f_Vce = zeros(timeNum(1),y*t);
 muscleFiberLength = zeros(timeNum(1),y*t);
 
 c = str2num(muscleNames{muscleNumber,2});
-muscleActivateLevel = [0.0];
+muscleActivateLevel = [0.2];
 searchListC = [c];
 sizeSeachListK = size(muscleActivateLevel);
 sizeSeachListC = size(searchListC);
