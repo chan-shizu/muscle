@@ -44,7 +44,7 @@ timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
 ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-ActivityLevel(1:end) = 0.2;%0.2;
+% ActivityLevel(1:end) = 0.2;%0.2;
 
 pointNum = size(data0);
 seNum = size(se);
@@ -77,7 +77,7 @@ sizeSeachListK = size(muscleActivateLevel);
 sizeSeachListC = size(searchListC);
 
 for searchMA=1:sizeSeachListC(2)
-    ActivityLevel(1:end)=muscleActivateLevel(1);
+%     ActivityLevel(1:end)=muscleActivateLevel(1);
     conc = searchListC(searchMA);
     
     for i=1:timeNum(1)%iの値は時間ステップ

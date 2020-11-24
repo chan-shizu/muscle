@@ -3,7 +3,6 @@ warning('on','all');
 warning;
 checkActivity = true;
 
-
 L_Percent = readmatrix("muscle_length\Lpercent_rot_27m.csv")
 L_Percent = L_Percent(1:10:end,21)
 % L_Percent(1:20) = [];
@@ -16,7 +15,11 @@ sizeA = size(ActivityLevel);
 timeStepActivity = sizeA(1);
 
 muscleNames = loadMuscleName();
-muscleName = [muscleNames{1}];
+prompt = '上腕二頭筋なら1, オトガイ舌骨筋なら2, 茎突舌骨筋なら3, 顎二腹筋前腹なら4, 顎二腹筋後腹なら5を押してね';
+muscleNumber = inputdlg(prompt,...
+             'choose muscle', [1 50])
+muscleNumber = str2num(muscleNumber{1})
+muscleName = [muscleNames{muscleNumber,1}];
 divisionMuscle = readmatrix("divisionMuscle.csv");
 y=divisionMuscle(1);
 t=divisionMuscle(2);
@@ -45,9 +48,10 @@ h=divisionMuscle(3);
 % L_Percent = [1 0.98 0.96 0.94 0.92 0.90	0.92 0.94 0.96 0.98	1 0.98 0.96 0.94 0.92 0.90 0.92 0.94 0.970 1]
 % L_Percent = [1 1.02 1.04 1.06 1.08 1.10	1.12 1.14 1.16 1.18	1.20 1.18 1.16 1.14 1.12 1.10 1.08 1.06 1.03 1.00]
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.91 0.92 0.93 0.94 0.95 0.96 0.97 0.985 1]
-L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90  0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
+L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
+% L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90]
 % L_Percent = [1 0.95 0.90 0.85 0.80 0.75 0.70 0.65 0.60 0.55 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50]
-% L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+% L_Percent = [1 1 1 1 1 1 1 1 1 1 ]
 sizeL = size(L_Percent);
 sizeL(1) = sizeL(2)
 timeStep = sizeL(1)*10;
@@ -98,15 +102,17 @@ if checkActivity == 1
 %     numberStepOriginalActivity = 1:timeStepActivity/sizeA(1):timeStepActivity;
 %     numberStepInterpActivity = 1:1:(timeStepActivity-timeStepActivity/sizeA(1));
 %     interpActivity = interp1(numberStepOriginalActivity,ActivityLevel,numberStepInterp,'spline');
-    ActivityLevel2 = ActivityLevel(1:10:end);
+%     ActivityLevel2 = ActivityLevel(1:10:end);
+    ActivityLevel2(1:300) =1;
+    ActivityLevel2(301:timeStep) =0;
     fileNameActivityLevel = ['parameter\',muscleName, '_ActivityLevel.csv'];
     writematrix(ActivityLevel2,fileNameActivityLevel);
-    figure1 = figure();
-    plot(1:sizeA(1),ActivityLevel);
-    pic_name1 = [muscleName,'ActivityLevel.jpg'];
-    figure2 = figure();
-    plot(ActivityLevel2);
-    pic_name2 = [muscleName,'ActivityLevel2.jpg'];
+%     figure1 = figure();
+%     plot(1:sizeA(1),ActivityLevel);
+%     pic_name1 = [muscleName,'ActivityLevel.jpg'];
+%     figure2 = figure();
+%     plot(ActivityLevel2);
+%     pic_name2 = [muscleName,'ActivityLevel2.jpg'];
 end
 
 figure3 = figure();

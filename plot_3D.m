@@ -170,6 +170,7 @@ for n=1:6
     end
 end
 
+timeNum(1)=20
 for i=1:timeNum(1)
     if i==1||mod(i,2)==0%10
         if i==1
@@ -329,15 +330,15 @@ for i=1:timeNum(1)
         %            ylim([-150000,350000]);
         %          ylim([-0.2*(10^8),0.25*(10^8)]);
         %         % %         zlim([1.20*(10^8),1.55*(10^8)]);
-        %            zlim([-200000,1000000]);
-        %                    zlim([70, 350]);
+        %            zlim([-200000,1270]);
+%                            zlim([1060, 1260]);
         Frame(l) = getframe(1);
         hold off
     end
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_MA=1_conneted_400‚Ü‚Å_E=5x10^4'];
+videoName = ['video\',muscle_name, '_test10'];
 v = VideoWriter(videoName);
 v.Quality=50;
 

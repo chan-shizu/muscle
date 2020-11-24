@@ -36,9 +36,9 @@ print xdata.count
 
 
 		/*çsÇ≤Ç∆Ç…ì«Ç›éÊÇË*/
-		xInfo = (filterString xdata[1] ",")
-		yInfo = (filterString ydata[1] ",")
-		zInfo = (filterString zdata[1] ",")
+		xInfo = (filterString xdata[300] ",")
+		yInfo = (filterString ydata[300] ",")
+		zInfo = (filterString zdata[300] ",")
 		
 		/*if (n == 1) then
 		(

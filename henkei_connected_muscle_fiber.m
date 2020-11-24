@@ -22,6 +22,7 @@ if powerFlag == 2
 end
 
 mass=0.015;%5*10^(-3);
+% mass=100;%5*10^(-3);
 gravityG = -9.8*500*0;%重力加速度 [m/s^2]
 bNum=(y-1)*(t-1)*(h-1)/8;   %blockNumber"C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\data_test_square.csv"
 %-9.98031度回転させる(筋肉ごとに代わる)
@@ -43,8 +44,8 @@ springkVPk = readmatrix(fileNameSprigk);%各要素のばね定数と体積保存力
 timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
-ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-ActivityLevel(1:end) = 0.2;%0.2;
+% ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
+% ActivityLevel(1:end) = 0.2;%0.2;
 
 pointNum = size(data0);
 seNum = size(se);
@@ -78,7 +79,7 @@ f_Vce = zeros(timeNum(1),y*t);
 muscleFiberLength = zeros(timeNum(1),y*t);
 
 c = str2num(muscleNames{muscleNumber,2});
-muscleActivateLevel = [1];
+muscleActivateLevel = [0.0];
 searchListC = [c];
 sizeSeachListK = size(muscleActivateLevel);
 sizeSeachListC = size(searchListC);

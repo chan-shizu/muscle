@@ -7,8 +7,13 @@ divisionMuscle = readmatrix("divisionMuscle.csv");
 y=divisionMuscle(1);
 t=divisionMuscle(2);
 h=divisionMuscle(3);
+
 muscleNames = loadMuscleName();
-muscleName = [muscleNames{1}];
+prompt = '上腕二頭筋なら1, オトガイ舌骨筋なら2, 茎突舌骨筋なら3, 顎二腹筋前腹なら4, 顎二腹筋後腹なら5を押してね';
+muscleNumber = inputdlg(prompt,...
+    'choose muscle', [1 50])
+muscleNumber = str2num(muscleNumber{1})
+muscle_name = [muscleNames{muscleNumber,1}];
 
 %% x
 for i=1:h

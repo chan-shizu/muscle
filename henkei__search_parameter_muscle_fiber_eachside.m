@@ -56,7 +56,7 @@ dt=1*10^(-3); %10^(-3)
 % d = 17; %各筋肉の番号，MuscleParam～っていうcsvファイルを参照
 % Mscl = csvread('MuscleParam_27m.csv', 2, 1);
 PCSA = str2num(muscleNames{muscleNumber,3});
-Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+Fmax = 0.7*10^6*PCSA/y/t; % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 % Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 Vsh = 0.3;
 Vshl = 0.23;
@@ -69,8 +69,13 @@ tic
 %プログラムの高速化のために事前割り当て
 make_variable();
 
+clear HillActive HillPassive f_Lce f_Vce
+f_Lce = zeros(timeNum(1),y*t);
+f_Vce = zeros(timeNum(1),y*t);
+muscleFiberLength = zeros(timeNum(1),y*t);
+
 c = str2num(muscleNames{muscleNumber,2});
-searchListK = [0.0];
+searchListK = [0.2];
 searchListC = [c];
 sizeSeachListK = size(searchListK);
 sizeSeachListC = size(searchListC);
@@ -140,11 +145,17 @@ for searchNK=1:sizeSeachListK(2)
             % 質点同士がつながったばねが発生する力を計算
             springF(i,s)=springkVPk(1,s)*lengthen_s(i,s);
             
-            if se(s,1)==2 %高さ方向に連なった質点同士では筋線維の力を計算
-                
-                % Hill'sモデルより筋張力を計算
-                muscle_fiber_force();
-            end
+%             if se(s,1)==2 %高さ方向に連なった質点同士では筋線維の力を計算
+%                 
+%                 % Hill'sモデルより筋張力を計算
+%                 muscle_fiber_force();
+%             end
+        end
+        
+                muscle_fiber_length(); %つながった筋線維の長さを計算
+        for muscleFiberNumber=1:y*t            
+            % Hill'sモデルより筋張力を計算
+            muscle_fiber_force_sum();
         end
         
         %%質点ごとのspringforce
