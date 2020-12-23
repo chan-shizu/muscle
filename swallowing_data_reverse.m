@@ -37,19 +37,20 @@ h=divisionMuscle(3);
 % distortion_AD = AD_length ./ AD_length(1);
 % distortion_PD = PD_length ./ PD_length(1);
 
-% L_Percent = [1 0.99 0.98 0.97 0.96 0.95	0.96 0.97 0.98 0.99	1 0.99 0.98	0.97 0.96 0.95 0.96	0.97 0.985 1]
-% L_Percent = [1 0.995 0.99 0.985 0.980 0.975	0.970 0.965 0.960 0.955	0.950 0.955 0.960 0.965 0.970 0.975 0.980 0.985 0.990 1]
-% L_Percent = [1.00 0.98 0.96 0.94 0.92 0.90	0.88 0.86 0.84 0.82	0.80 0.82 0.84 0.86 0.88 0.90 0.920 0.95 0.97 1.00];
 % L_Percent = [1 0.995 0.99 0.985 0.980 0.975	0.970 0.965 0.960 0.955	0.950 0.945 0.940 0.935 0.930 0.925 0.920 0.915 0.910 0.905]
 % L_Percent = [1 0.98 0.96 0.94 0.92 0.90	0.92 0.94 0.96 0.98	1 0.98 0.96 0.94 0.92 0.90 0.92 0.94 0.970 1]
 % L_Percent = [1 1.02 1.04 1.06 1.08 1.10	1.12 1.14 1.16 1.18	1.20 1.18 1.16 1.14 1.12 1.10 1.08 1.06 1.03 1.00]
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.91 0.92 0.93 0.94 0.95 0.96 0.97 0.985 1]
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
-% L_Percent = [1 0.95 0.90 0.85 0.80 0.75 0.70 0.65 0.60 0.55 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50 0.50]
-L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+% L_Percent = [1 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
+% L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
+L_Percent = [0.90 0.90 0.90 0.90 0.90]
+% L_Percent = [1.1 1.1 1.1 1.1 1.1]
+% L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+
 sizeL = size(L_Percent);
 sizeL(1) = sizeL(2)
-timeStep = sizeL(1)*20;
+timeStep = sizeL(1)*2000;
 
 %%強制変位面の座標を作成
 pathDataDisplacementPlane = ['muscle\data_', muscleName, '.csv'];%"data_rot_h.csv"
@@ -98,14 +99,16 @@ if checkActivity == 1
 %     numberStepInterpActivity = 1:1:(timeStepActivity-timeStepActivity/sizeA(1));
 %     interpActivity = interp1(numberStepOriginalActivity,ActivityLevel,numberStepInterp,'spline');
     ActivityLevel2 = ActivityLevel(1:10:end);
+    DataSize = size(newDataDisplacementPlane);
+    ActivityLevel2(1:DataSize(1)) = 0; 
     fileNameActivityLevel = ['parameter\',muscleName, '_ActivityLevel.csv'];
     writematrix(ActivityLevel2,fileNameActivityLevel);
-    figure1 = figure();
-    plot(1:sizeA(1),ActivityLevel);
-    pic_name1 = [muscleName,'ActivityLevel.jpg'];
-    figure2 = figure();
-    plot(ActivityLevel2);
-    pic_name2 = [muscleName,'ActivityLevel2.jpg'];
+%     figure1 = figure();
+%     plot(1:sizeA(1),ActivityLevel);
+%     pic_name1 = [muscleName,'ActivityLevel.jpg'];
+%     figure2 = figure();
+%     plot(ActivityLevel2);
+%     pic_name2 = [muscleName,'ActivityLevel2.jpg'];
 end
 
 figure3 = figure();

@@ -170,13 +170,13 @@ for n=1:6
     end
 end
 
-timeNum(1)=30
+% timeNum(1)=30
 for i=1:timeNum(1)
-    if i==1||mod(i,2)==0%10
+    if i==1||mod(i,20)==0%10
         if i==1
             l=1;
         else
-            l=i/2;%10
+            l=i/20;%10
         end
         
         
@@ -322,6 +322,7 @@ for i=1:timeNum(1)
         xlabel('x')
         ylabel('y')
         zlabel('z')
+        title(i)
         axis equal
         %         %         xlim([-0.1*(10^8),0.25*(10^8)]);
         %            xlim([-150000,350000]);
@@ -338,7 +339,7 @@ for i=1:timeNum(1)
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_test12'];
+videoName = ['video\',muscle_name, '_MA=0.2_ëwÇÃêîÇ≈äÑÇÈ_ëÃêœï€ë∂óÕx1_c=30_èkÇ›'];
 v = VideoWriter(videoName);
 v.Quality=50;
 

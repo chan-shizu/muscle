@@ -11,7 +11,7 @@ muscleNumber = inputdlg(prompt,...
 muscleNumber = str2num(muscleNumber{1})
 muscle_name = [muscleNames{muscleNumber,1}];
 divisionMuscle = readmatrix("divisionMuscle.csv");
-y=divisionMuscle(1);
+y=divisionMuscle(1); 
 t=divisionMuscle(2);
 h=divisionMuscle(3);
 
@@ -21,8 +21,8 @@ if powerFlag == 2
     %     muscleFiberFInput = zeros(300,2019);
 end
 
-mass=0.015;%5*10^(-3);
-% mass=100;%5*10^(-3);
+mass=0.010;%5*10^(-3);
+% mass=1;%5*10^(-3);
 gravityG = -9.8*500*0;%重力加速度 [m/s^2]
 bNum=(y-1)*(t-1)*(h-1)/8;   %blockNumber"C:\Users\bubbl\Documents\shizuya_M1\DefMuscle_for_TUS_2018\matlab\surface2grid_0608\muscle\min\data_test_square.csv"
 %-9.98031度回転させる(筋肉ごとに代わる)
@@ -40,6 +40,7 @@ data0=csvread(file_name_data0, 0, 0);%/1000;
 se=csvread(file_name_se, 0, 0);
 tetra=csvread(file_name_tetra, 0, 0);
 springkVPk = readmatrix(fileNameSprigk);%各要素のばね定数と体積保存力
+% springkVPk(2,:)=0;%springkVPk(2,:)/1;
 
 timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
@@ -50,15 +51,15 @@ actSize = size(ActivityLevel);
 pointNum = size(data0);
 seNum = size(se);
 tetraNum = size(tetra);
-dt=1*10^(-3); %10^(-3)
+dt=1*10^(-4); %10^(-3)
 % dt = 2.0/timeNum(1);
 
 % Hillモデル計算の準備
 % d = 17; %各筋肉の番号，MuscleParam～っていうcsvファイルを参照
 % Mscl = csvread('MuscleParam_27m.csv', 2, 1);
 PCSA = str2num(muscleNames{muscleNumber,3});
-% Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
-Fmax = 0.7*10^6*PCSA/y/t; % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+% Fmax = 0.7*10^6*PCSA/y/t; % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 % Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 Vsh = 0.3;
 Vshl = 0.23;
@@ -79,13 +80,14 @@ f_Vce = zeros(timeNum(1),y*t);
 muscleFiberLength = zeros(timeNum(1),y*t);
 
 c = str2num(muscleNames{muscleNumber,2});
-muscleActivateLevel = [0.2];
+% muscleActivateLevel() = [0.2];
+ActivityLevel(:) = 0.2;
 searchListC = [c];
-sizeSeachListK = size(muscleActivateLevel);
+% sizeSeachListK = size(muscleActivateLevel);
 sizeSeachListC = size(searchListC);
 
 for searchMA=1:sizeSeachListC(2)
-    ActivityLevel(1:end)=muscleActivateLevel(1);
+%     ActivityLevel(1:end)=muscleActivateLevel(1);
     conc = searchListC(searchMA);
     
     for i=1:timeNum(1)%iの値は時間ステップ
@@ -229,10 +231,18 @@ for searchMA=1:sizeSeachListC(2)
             Fv_y(i,1:pointNum(1))=0;
             Fv_z(i,1:pointNum(1))=0;
         else
-            
+%             
             Fv_x(i,1:pointNum(1)) = FvA(1:pointNum(1),1).'+FvB(1:pointNum(1),1).'+FvC(1:pointNum(1),1).'+FvD(1:pointNum(1),1).';
             Fv_y(i,1:pointNum(1)) = FvA(1:pointNum(1),2).'+FvB(1:pointNum(1),2).'+FvC(1:pointNum(1),2).'+FvD(1:pointNum(1),2).';
             Fv_z(i,1:pointNum(1)) = FvA(1:pointNum(1),3).'+FvB(1:pointNum(1),3).'+FvC(1:pointNum(1),3).'+FvD(1:pointNum(1),3).';
+            
+%             Fv_x(i,103:105) = 0;
+%             Fv_y(i,103:105) = 0;
+%             Fv_z(i,103:105) = 0;
+%             
+%             Fv_x(i,110) = 0;
+%             Fv_y(i,110) = 0;
+%             Fv_z(i,110) = 0;
             
             %z軸方向の力を0にして，x,y軸方向に分散(xy平面に写像)
 %             if (powerFlag == 0) || (powerFlag == 1)

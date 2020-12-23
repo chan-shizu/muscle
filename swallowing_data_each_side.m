@@ -50,7 +50,7 @@ h=divisionMuscle(3);
 L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
 sizeL = size(L_Percent);
 sizeL(1) = sizeL(2)
-timeStep = sizeL(1)*20;
+timeStep = sizeL(1)*50;
 
 %%強制変位面の座標を作成
 pathDataDisplacementPlane = ['muscle\data_', muscleName, '.csv'];%"data_rot_h.csv"
