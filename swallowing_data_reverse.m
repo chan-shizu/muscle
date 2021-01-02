@@ -15,7 +15,11 @@ sizeA = size(ActivityLevel);
 timeStepActivity = sizeA(1);
 
 muscleNames = loadMuscleName();
-muscleName = [muscleNames{1}];
+prompt = '上腕二頭筋なら1, オトガイ舌骨筋なら2, 茎突舌骨筋なら3, 顎二腹筋前腹なら4, 顎二腹筋後腹なら5を押してね';
+muscleNumber = inputdlg(prompt,...
+    'choose muscle', [1 50])
+muscleNumber = str2num(muscleNumber{1})
+muscleName = [muscleNames{muscleNumber,1}];
 divisionMuscle = readmatrix("divisionMuscle.csv");
 y=divisionMuscle(1);
 t=divisionMuscle(2);
@@ -44,13 +48,13 @@ h=divisionMuscle(3);
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
 % L_Percent = [1 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
-L_Percent = [0.90 0.90 0.90 0.90 0.90]
-% L_Percent = [1.1 1.1 1.1 1.1 1.1]
-% L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+% L_Percent = [0.90 0.90 0.90 0.90 0.90]
+%  L_Percent = [1.1 1.1 1.1 1.1 1.1]
+L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
 
 sizeL = size(L_Percent);
 sizeL(1) = sizeL(2)
-timeStep = sizeL(1)*2000;
+timeStep = sizeL(1)*500;
 
 %%強制変位面の座標を作成
 pathDataDisplacementPlane = ['muscle\data_', muscleName, '.csv'];%"data_rot_h.csv"

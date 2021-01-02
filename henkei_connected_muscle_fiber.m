@@ -40,13 +40,14 @@ data0=csvread(file_name_data0, 0, 0);%/1000;
 se=csvread(file_name_se, 0, 0);
 tetra=csvread(file_name_tetra, 0, 0);
 springkVPk = readmatrix(fileNameSprigk);%各要素のばね定数と体積保存力
-% springkVPk(2,:)=0;%springkVPk(2,:)/1;
+% springkVPk(1,:)=10;%springkVPk(2,:)/1;
+springkVPk(2,:)=0;%springkVPk(2,:)*3;
 
 timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
 % ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-% ActivityLevel(1:end) = 0.2;%0.2;
+ActivityLevel(1:end) = 0.05;%0.2;
 
 pointNum = size(data0);
 seNum = size(se);
@@ -58,8 +59,8 @@ dt=1*10^(-4); %10^(-3)
 % d = 17; %各筋肉の番号，MuscleParam～っていうcsvファイルを参照
 % Mscl = csvread('MuscleParam_27m.csv', 2, 1);
 PCSA = str2num(muscleNames{muscleNumber,3});
-Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
-% Fmax = 0.7*10^6*PCSA/y/t; % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+%Fmax = 0.7*10^6*PCSA/y/t/(h-1); % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
+Fmax = 0.7*10^6*PCSA/y/t; % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 % Fmax = 2940/y/t/(h-1);                 % 筋線維1本当たりの最大筋力(筋肉ごとに算出)
 Vsh = 0.3;
 Vshl = 0.23;
@@ -80,10 +81,7 @@ f_Vce = zeros(timeNum(1),y*t);
 muscleFiberLength = zeros(timeNum(1),y*t);
 
 c = str2num(muscleNames{muscleNumber,2});
-% muscleActivateLevel() = [0.2];
-ActivityLevel(:) = 0.2;
 searchListC = [c];
-% sizeSeachListK = size(muscleActivateLevel);
 sizeSeachListC = size(searchListC);
 
 for searchMA=1:sizeSeachListC(2)
@@ -267,7 +265,7 @@ for searchMA=1:sizeSeachListC(2)
         if volumeRatio(i) > 2.0
             break
         end
-        
+         
     end
     toc
     volumeRatio(end-1:end)=[]
