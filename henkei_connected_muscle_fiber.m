@@ -40,14 +40,14 @@ data0=csvread(file_name_data0, 0, 0);%/1000;
 se=csvread(file_name_se, 0, 0);
 tetra=csvread(file_name_tetra, 0, 0);
 springkVPk = readmatrix(fileNameSprigk);%各要素のばね定数と体積保存力
-% springkVPk(1,:)=10;%springkVPk(2,:)/1;
-springkVPk(2,:)=0;%springkVPk(2,:)*3;
+springkVPk(1,:)=0;%springkVPk(2,:)/1;
+% springkVPk(2,:)=0;%springkVPk(2,:)*3;
 
 timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
 % ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-ActivityLevel(1:end) = 0.05;%0.2;
+ActivityLevel(1:end) = 0.0;%0.2;
 
 pointNum = size(data0);
 seNum = size(se);

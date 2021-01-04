@@ -1,11 +1,15 @@
 %ばね+筋線維のモデル
-% clc; %コマンドウェイドウからすべてのテキストをクリア
-% clear; %ワークスペースからアイテムを削除し，システムメモリ開放
+clc; %コマンドウェイドウからすべてのテキストをクリア
+clear; %ワークスペースからアイテムを削除し，システムメモリ開放
 warning('on','all');%すべての警告を有効にする
 warning;
 muscleNames = loadMuscleName();
-muscle_name = [muscleNames{6}];
-
+prompt = '上腕二頭筋なら1, オトガイ舌骨筋なら2, 茎突舌骨筋なら3, 顎二腹筋前腹なら4, 顎二腹筋後腹なら5を押してね';
+muscleNumber = inputdlg(prompt,...
+    'choose muscle', [1 50])
+muscleNumber = str2num(muscleNumber{1})
+muscle_name = [muscleNames{muscleNumber,1}];
+divisionMuscle = readmatrix("divisionMuscle.csv");
 E=5*10^4; %file:///C:/Users/%E5%8D%A0%E9%83%A8%E3%80%80%E9%BA%BB%E9%87%8C%E5%AD%90/Downloads/nagano_05-02-05%20(1).pdf
 % E=1.02*10^5; %http://cfd-duo.riken.go.jp/cbms-mp/logon/data/Biceps%20brachii.pdf
 v=0.49;%0.49;
@@ -97,8 +101,9 @@ csvwrite(file_name_se, se);
 %% tetra
 for j=1:(t-1)*(h-1)
     for i=1:y-1
-%         tetra(1+5*(j-1),1+10*(i-1):10*i)=i;
-        tetra(1+5*(j-1),1+5*(i-1):5*i)=i;
+        tetra(1+5*(j-1),1+10*(i-1):10*i)=i;
+%         tetra(1+5*(j-1),1+5*(i-1):5*i)=i;
+%         tetra(1+5*(j-1),1+6*(i-1):6*i)=i;
     end
 end
 
@@ -137,6 +142,7 @@ end
 for i=1:t-2
    tetra(2+5*i:5+5*i,1:10*(y-1))=tetra(2+5*(i-1):5+5*(i-1),1:10*(y-1))+y;
 %      tetra(2+5*i:5+5*i,1:5*(y-1))=tetra(2+5*(i-1):5+5*(i-1),1:5*(y-1))+y;
+%     tetra(2+5*i:5+5*i,1:6*(y-1))=tetra(2+5*(i-1):5+5*(i-1),1:6*(y-1))+y;
 end
 
 %高さ
@@ -144,6 +150,7 @@ for i=1:h-2
     for k=1:t-1
        tetra(2+5*(k-1)+5*(t-1)*i:5+5*(k-1)+5*(t-1)*i,1:10*(y-1))=tetra(2+5*(k-1)+5*(t-1)*(i-1):5+5*(k-1)+5*(t-1)*(i-1),1:10*(y-1))+y*t;
 %         tetra(2+5*(k-1)+5*(t-1)*i:5+5*(k-1)+5*(t-1)*i,1:5*(y-1))=tetra(2+5*(k-1)+5*(t-1)*(i-1):5+5*(k-1)+5*(t-1)*(i-1),1:5*(y-1))+y*t;
+%         tetra(2+5*(k-1)+5*(t-1)*i:5+5*(k-1)+5*(t-1)*i,1:6*(y-1))=tetra(2+5*(k-1)+5*(t-1)*(i-1):5+5*(k-1)+5*(t-1)*(i-1),1:6*(y-1))+y*t;
     end
 end
 
