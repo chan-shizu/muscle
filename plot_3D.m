@@ -170,7 +170,7 @@ for n=1:6
     end
 end
 
-% timeNum(1)=2500
+% timeNum(1)=1500
 for i=1:timeNum(1)
     if i==1||mod(i,20)==0%10
         if i==1
@@ -339,7 +339,7 @@ for i=1:timeNum(1)
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_MA=0.0_original_1'];
+videoName = ['video\',muscle_name, '_MA=0.02_ëÃêœï€ë∂óÕboxÇ≤Ç∆_dt=5x10^-4'];
 v = VideoWriter(videoName);
 v.Quality=50;
 
