@@ -25,9 +25,9 @@ boxVolume(i,:) = tetraV1 + tetraV2 + tetraV3 + tetraV4 + tetraV5 + tetraV6;
 
 boxSize = size(boxVolume);
 for boxNumber=1:boxSize(2)
-    boxIncludeTetraVolume(i,1+6*(boxNumber-1):1+6*boxNumber) = boxVolume(i,boxNumber);
+    boxIncludeTetraVolume(i,1+tetraNum(2)/(t-1)*(boxNumber-1):1+tetraNum(2)/(t-1)*boxNumber) = boxVolume(i,boxNumber);
 end
 volume(i) = sumTetraV1 + sumTetraV2 + sumTetraV3 + sumTetraV4 + sumTetraV5 + sumTetraV6;
 volumeRatio(i) = volume(i)/volume(1);
-plot([1:i],volumeRatio);
-Frame(i) = getframe(1);
+% plot([1:i],volumeRatio);
+% Frame(i) = getframe(1);

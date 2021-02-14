@@ -36,7 +36,7 @@ if checkRotation == 1
     
     average_lower_x = mean(datai_x(1,1:p_t*p_y));
     average_lower_y = mean(datai_y(1,1:p_t*p_y));
-    average_lower_z = mean(datai_z(1,1:p_t*p_y));
+    average_lower_z = mean(dslackatai_z(1,1:p_t*p_y));
     center_of_rotation = [1.0*average_lower_x,...
         1.0*average_lower_y,...
         1.0*average_lower_z];
@@ -170,7 +170,7 @@ for n=1:6
     end
 end
 
-% timeNum(1)=1500
+% timeNum(1)=150
 for i=1:timeNum(1)
     if i==1||mod(i,20)==0%10
         if i==1
@@ -205,6 +205,8 @@ for i=1:timeNum(1)
                 hold on
             end
         end
+        
+        plot3(datai_x(i,1:p_h*p_t*p_y)*1000,datai_y(i,1:p_h*p_t*p_y)*1000,datai_z(i,1:p_h*p_t*p_y)*1000,'r.');
         
         
         
@@ -339,7 +341,7 @@ for i=1:timeNum(1)
 end
 
 v = VideoWriter('speedup');
-videoName = ['video\',muscle_name, '_MA=0.02_体積保存力boxごと_dt=5x10^-4'];
+videoName = ['video\',muscle_name, '_4000step_MA=0.02_c=30_体積保存力x10000_起始点_パラメーターばらばら_5x5x18'];
 v = VideoWriter(videoName);
 v.Quality=50;
 

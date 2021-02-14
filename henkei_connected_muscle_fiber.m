@@ -47,12 +47,13 @@ timeNum = size(data);%時間ステップ
 ActivityLevel = readmatrix(fileNameActivityLevel);
 actSize = size(ActivityLevel);
 % ActivityLevel(actSize(2)+1:timeNum) = ActivityLevel(end);
-ActivityLevel(1:end) = 0.02;%0.2;
+ActivityLevel(1:end) = 0.02;%0.02;
+% ActivityLevel(301:end,1) = 0; 
 
 pointNum = size(data0);
 seNum = size(se);
 tetraNum = size(tetra);
-dt=5*10^(-4); %10^(-3)
+dt=4*10^(-4); %10^(-3)
 % dt = 2.0/timeNum(1);
 
 % Hillモデル計算の準備
@@ -84,6 +85,8 @@ c = str2num(muscleNames{muscleNumber,2});
 searchListC = [c];
 sizeSeachListC = size(searchListC);
 
+
+
 %初期の体積を計算
 initial_volume();
 
@@ -92,6 +95,9 @@ for searchMA=1:sizeSeachListC(2)
     conc = searchListC(searchMA);
     
     for i=1:timeNum(1)%iの値は時間ステップ
+%         if i==2
+%             springkVPk(1,ul(2)+1:ul(3))=10*springkVPk(1,ul(2)+1:ul(3))
+%         end
         i
         %プログラムの高速化のための事前割り当て
         fvA = zeros(3,tetraNum(2)+((tetraNum(1)/5-1)*tetraNum(2)));
@@ -192,9 +198,9 @@ for searchMA=1:sizeSeachListC(2)
             end
         end
         
-        FsSum_x(i,:)=Fs_x(i,:,1)+Fs_x(i,:,3)+Fs_x(i,:,4)+Fs_x(i,:,5)+Fs_x(i,:,6)+muscleFiberF_x(i,:); %+Fs_x(i,:,2)
-        FsSum_y(i,:)=Fs_y(i,:,1)+Fs_y(i,:,3)+Fs_y(i,:,4)+Fs_y(i,:,5)+Fs_y(i,:,6)+muscleFiberF_y(i,:); %+Fs_y(i,:,2
-        FsSum_z(i,:)=Fs_z(i,:,1)+Fs_z(i,:,3)+Fs_z(i,:,4)+Fs_z(i,:,5)+Fs_z(i,:,6)+muscleFiberF_z(i,:); %+Fs_z(i,:,2)
+        FsSum_x(i,:)=Fs_x(i,:,1)+Fs_x(i,:,2)+Fs_x(i,:,3)+Fs_x(i,:,4)+Fs_x(i,:,5)+Fs_x(i,:,6)+muscleFiberF_x(i,:); %+Fs_x(i,:,2)
+        FsSum_y(i,:)=Fs_y(i,:,1)+Fs_y(i,:,2)+Fs_y(i,:,3)+Fs_y(i,:,4)+Fs_y(i,:,5)+Fs_y(i,:,6)+muscleFiberF_y(i,:); %+Fs_y(i,:,2
+        FsSum_z(i,:)=Fs_z(i,:,1)+Fs_z(i,:,2)+Fs_z(i,:,3)+Fs_z(i,:,4)+Fs_z(i,:,5)+Fs_z(i,:,6)+muscleFiberF_z(i,:); %+Fs_z(i,:,2)
         
         
         %% 拘束条件
@@ -265,21 +271,21 @@ for searchMA=1:sizeSeachListC(2)
         calculate_force_And_velocity();
         
         plot_volume();
-        if volumeRatio(i) > 2.0
-            break
-        end
+%         if volumeRatio(i) > 2.0
+%             break
+%         end
          
     end
     toc
-    volumeRatio(end-1:end)=[]
-    figure1 = figure()
-    plot([1:(i-2)],volumeRatio);
-    %         graphName = "springk=" + muscleActivateLevel(searchMA) + "_c=" + searchListC(searchNC);
-    graphName = "Number" + searchMA;
-    saveas(figure1,graphName);
-    VolumeHistroy(searchMA) = volumeRatio(end);
-    volumeRatio = [];
-    close
+%     volumeRatio(end-1:end)=[]
+%     figure1 = figure()
+%     plot([1:(i-2)],volumeRatio);
+%     %         graphName = "springk=" + muscleActivateLevel(searchMA) + "_c=" + searchListC(searchNC);
+%     graphName = "Number" + searchMA;
+%     saveas(figure1,graphName);
+%     VolumeHistroy(searchMA) = volumeRatio(end);
+%     volumeRatio = [];
+%     close
 end
 
 F_fib=springF(:,ul(1,2)+1:ul(1,2)+y*t*(h-1));
@@ -290,7 +296,7 @@ datai_z_name=strcat('output\', muscle_name, '_data_z.csv');
 csvwrite(datai_x_name,datai_x);
 csvwrite(datai_y_name,datai_y);
 csvwrite(datai_z_name,datai_z);
-csvwrite("VolumeHistory.csv",VolumeHistroy);
+% csvwrite("VolumeHistory.csv",VolumeHistroy);
 
 if (powerFlag == 0) || (powerFlag == 1)
     csvwrite("muscleFiberPower.csv",muscleFiberF);

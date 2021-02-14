@@ -14,7 +14,7 @@ uicontrol('Style', 'pushbutton', 'String', 'Stop',...
     'Position', [20 20 80 40], 'Callback', 'runLoop=false;');
 
 % 動画読込みのオブジェクト生成とフレームレート取得
-videoReader = vision.VideoFileReader("D:\pictures\DSCF4161_Trim_Trim_strict.mp4");
+videoReader = vision.VideoFileReader("D:\pictures\2021-02-02\20210202161846.m2ts");
 
 % サンプルレートを取得
 S = videoReader.info;

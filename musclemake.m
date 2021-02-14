@@ -59,22 +59,22 @@ file(y+1,:)=[];
 % file_n(15,:)=file(15,:);
 % file_n(16,:)=file(16,:);
 
-file_n(1,:)=file(4,:);
-file_n(2,:)=file(5,:);
-file_n(3,:)=file(14,:);
-file_n(4,:)=file(15,:);
-file_n(5,:)=file(16,:);
-file_n(6,:)=file(3,:);
-file_n(7,:)=file(13,:);
-file_n(8,:)=file(2,:);
-file_n(9,:)=file(12,:);
-file_n(10,:)=file(1,:);
-file_n(11,:)=file(11,:);
-file_n(12,:)=file(6,:);
-file_n(13,:)=file(7,:);
-file_n(14,:)=file(8,:);
-file_n(15,:)=file(9,:);
-file_n(16,:)=file(10,:);
+file_n(1,:)=file(14,:);
+file_n(2,:)=file(15,:);
+file_n(3,:)=file(16,:);
+file_n(4,:)=file(13,:);
+file_n(5,:)=file(12,:);
+file_n(6,:)=file(5,:);
+file_n(7,:)=file(11,:);
+file_n(8,:)=file(4,:);
+file_n(9,:)=file(10,:);
+file_n(10,:)=file(3,:);
+file_n(11,:)=file(9,:);
+file_n(12,:)=file(2,:);
+file_n(13,:)=file(1,:);
+file_n(14,:)=file(6,:);
+file_n(15,:)=file(7,:);
+file_n(16,:)=file(8,:);
 
 % file_n(1,:)=file(7,:);
 % file_n(2,:)=file(6,:);
@@ -176,73 +176,20 @@ else
 %     file_mix=file_n+file_p;
 
 %% 靜谷ver
-    file_mix(1:y, :) = file_n(1:y, :);
-    file_mix(y*(t-1)+1:y*t, :) = file_n(y+2*(t-2)+1:2*y+2*(t-2), :);
-    for i=1:h
-        for j=1:t-2
-            xarray = linspace(file_n(y+j*2-1,1+3*(i-1)), file_n(y+j*2,1+3*(i-1)),y);%左端と右端のx座標を等間隔で
-            file_mix(y*j+1,1+3*(i-1)) = file_n(y+j*2-1,1+3*(i-1));
-            file_mix(y*(j+1),1+3*(i-1)) = file_n(y+j*2,1+3*(i-1));
-            file_mix(y*j+1,2+3*(i-1)) = file_n(y+j*2-1,2+3*(i-1));
-            file_mix(y*(j+1),2+3*(i-1)) = file_n(y+j*2,2+3*(i-1));         
-            for k=1:y-2
-                file_mix(y*j+k+1,1+3*(i-1)) = xarray(k+1);
-                file_mix(y*j+k+1,2+3*(i-1)) = line_t(j,1,i)*file_mix(y*j+k+1,1+3*(i-1)) + line_t(j,2,i);
-            end
-        end
-        file_mix(1:y*t,3*i) = file_n(1,3*i);
-    end
-    %file_nのh*3+1列目に，なぜか値が0のセルが発生するから削除
-    fileSize = size(file_n);
-    if file_n(1,fileSize(2)) == 0
-        file_n(:,fileSize(2)) = [];
-    end
-
- %% 靜谷ver2 5x5を想定　断面が円の場合
 %     file_mix(1:y, :) = file_n(1:y, :);
-%     file_mix(y*(t-1)+1:y*t, :) = file_n(y+2*(t-2)+1:2*y+2*(t-2), :);%16行のfile_nを25行のfile_mixにする
+%     file_mix(y*(t-1)+1:y*t, :) = file_n(y+2*(t-2)+1:2*y+2*(t-2), :);
 %     for i=1:h
-%         xarray1 = linspace(file_n(1,1+3*(i-1)), file_n(2*y+2*(t-2),1+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         xarray2 = linspace(file_n(y+t-2,1+3*(i-1)), file_n(y+t-1,1+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         xarray3 = linspace(file_n(y+2*(t-2)+1,1+3*(i-1)), file_n(y,1+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         xarray4 = linspace(file_n(y+2*(t-2)+int8(y/2),1+3*(i-1)), file_n(int8(y/2),1+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         yarray1 = linspace(file_n(1,2+3*(i-1)), file_n(2*y+2*(t-2),2+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         yarray2 = linspace(file_n(y+t-2,2+3*(i-1)), file_n(y+t-1,2+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         yarray3 = linspace(file_n(y+2*(t-2)+1,2+3*(i-1)), file_n(y,2+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         yarray4 = linspace(file_n(y+2*(t-2)+int8(y/2),2+3*(i-1)), file_n(int8(y/2),2+3*(i-1)),y);%左端と右端のx座標を等間隔で
-%         
 %         for j=1:t-2
-%             file_mix(y*j+1,1+3*(i-1)) = file_n(y+j*2-1,1+3*(i-1));%両端の座標はfile_nの値をそのまま使用できる
+%             xarray = linspace(file_n(y+j*2-1,1+3*(i-1)), file_n(y+j*2,1+3*(i-1)),y);%左端と右端のx座標を等間隔で
+%             file_mix(y*j+1,1+3*(i-1)) = file_n(y+j*2-1,1+3*(i-1));
 %             file_mix(y*(j+1),1+3*(i-1)) = file_n(y+j*2,1+3*(i-1));
 %             file_mix(y*j+1,2+3*(i-1)) = file_n(y+j*2-1,2+3*(i-1));
-%             file_mix(y*(j+1),2+3*(i-1)) = file_n(y+j*2,2+3*(i-1));
+%             file_mix(y*(j+1),2+3*(i-1)) = file_n(y+j*2,2+3*(i-1));         
+%             for k=1:y-2
+%                 file_mix(y*j+k+1,1+3*(i-1)) = xarray(k+1);
+%                 file_mix(y*j+k+1,2+3*(i-1)) = line_t(j,1,i)*file_mix(y*j+k+1,1+3*(i-1)) + line_t(j,2,i);
+%             end
 %         end
-%         
-%         
-%         %2行目の内部補完
-%         file_mix(y+2,1+3*(i-1)) = xarray1(2);
-%         file_mix(y+2,2+3*(i-1)) = yarray1(2);
-%         file_mix(y+3,1+3*(i-1)) = xarray4(4);
-%         file_mix(y+3,2+3*(i-1)) = yarray4(4);
-%         file_mix(y+4,1+3*(i-1)) = xarray3(4);
-%         file_mix(y+4,2+3*(i-1)) = yarray3(4);
-%         
-%         %3行目の内部補完
-%         file_mix(2*y+2,1+3*(i-1)) = xarray2(2);
-%         file_mix(2*y+2,2+3*(i-1)) = yarray2(2);
-%         file_mix(2*y+3,1+3*(i-1)) = xarray4(3);
-%         file_mix(2*y+3,2+3*(i-1)) = yarray4(3);
-%         file_mix(2*y+4,1+3*(i-1)) = xarray2(4);
-%         file_mix(2*y+4,2+3*(i-1)) = yarray2(4);
-%         
-%         %4行目の内部補完
-%         file_mix(3*y+2,1+3*(i-1)) = xarray3(2);
-%         file_mix(3*y+2,2+3*(i-1)) = yarray3(2);
-%         file_mix(3*y+3,1+3*(i-1)) = xarray4(2);
-%         file_mix(3*y+3,2+3*(i-1)) = yarray4(2);
-%         file_mix(3*y+4,1+3*(i-1)) = xarray1(4);
-%         file_mix(3*y+4,2+3*(i-1)) = yarray1(4);
-%         
 %         file_mix(1:y*t,3*i) = file_n(1,3*i);
 %     end
 %     %file_nのh*3+1列目に，なぜか値が0のセルが発生するから削除
@@ -250,6 +197,59 @@ else
 %     if file_n(1,fileSize(2)) == 0
 %         file_n(:,fileSize(2)) = [];
 %     end
+
+ %% 靜谷ver2 5x5を想定　断面が円の場合
+    file_mix(1:y, :) = file_n(1:y, :);
+    file_mix(y*(t-1)+1:y*t, :) = file_n(y+2*(t-2)+1:2*y+2*(t-2), :);%16行のfile_nを25行のfile_mixにする
+    for i=1:h
+        xarray1 = linspace(file_n(1,1+3*(i-1)), file_n(2*y+2*(t-2),1+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        xarray2 = linspace(file_n(y+t-2,1+3*(i-1)), file_n(y+t-1,1+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        xarray3 = linspace(file_n(y+2*(t-2)+1,1+3*(i-1)), file_n(y,1+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        xarray4 = linspace(file_n(y+2*(t-2)+int8(y/2),1+3*(i-1)), file_n(int8(y/2),1+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        yarray1 = linspace(file_n(1,2+3*(i-1)), file_n(2*y+2*(t-2),2+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        yarray2 = linspace(file_n(y+t-2,2+3*(i-1)), file_n(y+t-1,2+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        yarray3 = linspace(file_n(y+2*(t-2)+1,2+3*(i-1)), file_n(y,2+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        yarray4 = linspace(file_n(y+2*(t-2)+int8(y/2),2+3*(i-1)), file_n(int8(y/2),2+3*(i-1)),y);%左端と右端のx座標を等間隔で
+        
+        for j=1:t-2
+            file_mix(y*j+1,1+3*(i-1)) = file_n(y+j*2-1,1+3*(i-1));%両端の座標はfile_nの値をそのまま使用できる
+            file_mix(y*(j+1),1+3*(i-1)) = file_n(y+j*2,1+3*(i-1));
+            file_mix(y*j+1,2+3*(i-1)) = file_n(y+j*2-1,2+3*(i-1));
+            file_mix(y*(j+1),2+3*(i-1)) = file_n(y+j*2,2+3*(i-1));
+        end
+        
+        
+        %2行目の内部補完
+        file_mix(y+2,1+3*(i-1)) = xarray1(2);
+        file_mix(y+2,2+3*(i-1)) = yarray1(2);
+        file_mix(y+3,1+3*(i-1)) = xarray4(4);
+        file_mix(y+3,2+3*(i-1)) = yarray4(4);
+        file_mix(y+4,1+3*(i-1)) = xarray3(4);
+        file_mix(y+4,2+3*(i-1)) = yarray3(4);
+        
+        %3行目の内部補完
+        file_mix(2*y+2,1+3*(i-1)) = xarray2(2);
+        file_mix(2*y+2,2+3*(i-1)) = yarray2(2);
+        file_mix(2*y+3,1+3*(i-1)) = xarray4(3);
+        file_mix(2*y+3,2+3*(i-1)) = yarray4(3);
+        file_mix(2*y+4,1+3*(i-1)) = xarray2(4);
+        file_mix(2*y+4,2+3*(i-1)) = yarray2(4);
+        
+        %4行目の内部補完
+        file_mix(3*y+2,1+3*(i-1)) = xarray3(2);
+        file_mix(3*y+2,2+3*(i-1)) = yarray3(2);
+        file_mix(3*y+3,1+3*(i-1)) = xarray4(2);
+        file_mix(3*y+3,2+3*(i-1)) = yarray4(2);
+        file_mix(3*y+4,1+3*(i-1)) = xarray1(4);
+        file_mix(3*y+4,2+3*(i-1)) = yarray1(4);
+        
+        file_mix(1:y*t,3*i) = file_n(1,3*i);
+    end
+    %file_nのh*3+1列目に，なぜか値が0のセルが発生するから削除
+    fileSize = size(file_n);
+    if file_n(1,fileSize(2)) == 0
+        file_n(:,fileSize(2)) = [];
+    end
 % %% 靜谷ver3
 %     file_mix(1:y, :) = file_n(1:y, :);
 %     file_mix(y*(t-1)+1:y*t, :) = file_n(y+2*(t-2)+1:2*y+2*(t-2), :);

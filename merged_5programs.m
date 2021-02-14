@@ -4,8 +4,8 @@ checkRotation = true;%true or fablse
 checkSurface = true;
 checkMusclemake = true;
 checkArrange = true;
-checkParameter = true;
-checkSwallowing = true;
+checkParameter = 0;
+checkSwallowing = 0;
 
 %% rotation
 if checkRotation == 1

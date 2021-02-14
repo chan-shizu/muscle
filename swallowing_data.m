@@ -1,4 +1,5 @@
 clear
+% clc
 warning('on','all');
 warning;
 checkActivity = true;

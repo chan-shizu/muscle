@@ -9,10 +9,13 @@ muscleNumber = inputdlg(prompt,...
              'choose muscle', [1 50])
 muscleNumber = str2num(muscleNumber{1})
 muscle_name = [muscleNames{muscleNumber,1}];
-file_name_data_x = ['output\',muscle_name, '_data_x.csv'];
-file_name_data_y = ['output\',muscle_name, '_data_y.csv'];
-file_name_data_z = ['output\',muscle_name, '_data_z.csv'];
+% file_name_data_x = ['output\',muscle_name, '_data_x.csv'];
+% file_name_data_y = ['output\',muscle_name, '_data_y.csv'];
+% file_name_data_z = ['output\',muscle_name, '_data_z.csv'];
 
+file_name_data_x = ["D:\Documents\作業まとめ\2021_0203\起始点_MA=0.05\biceps_long_data_x.csv"];
+file_name_data_y = ["D:\Documents\作業まとめ\2021_0203\起始点_MA=0.05\biceps_long_data_y.csv"];
+file_name_data_z = ["D:\Documents\作業まとめ\2021_0203\起始点_MA=0.05\biceps_long_data_z.csv"];
 data_x = readmatrix(file_name_data_x);
 data_y = readmatrix(file_name_data_y);
 data_z = readmatrix(file_name_data_z);
@@ -32,24 +35,52 @@ for i=1:h
         y_arranged(:,y*t+(i-2)*(2*y+2*(t-2))+1:2*y*t+(i-2)*(2*y+2*(t-2))) = data_y(:,y*t*(h-1)+1:y*t*h);
         z_arranged(:,y*t+(i-2)*(2*y+2*(t-2))+1:2*y*t+(i-2)*(2*y+2*(t-2))) = data_z(:,y*t*(h-1)+1:y*t*h);
     else
+%         x_arranged(:,1+t*y+(i-2)*(2*y+2*(t-2)):y+t*y+(i-2)*(2*y+2*(t-2))) = data_x(:,1+(i-1)*y*t:y+(i-1)*y*t);
+%         x_arranged(:,y+1+t*y+(i-2)*(2*y+2*(t-2)):y+1+(y-3)+t*y+(i-2)*(2*y+2*(t-2))) = data_x(:,1+y+(i-1)*y*t:y:1+y*(t-2)+(i-1)*y*t);
+%         x_arranged(:,2*y+t*y+(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) = data_x(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
+%         x_arranged(:,y+t*y+(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+(y-2)+(i-2)*(2*y+2*(t-2))) = data_x(:,y*(t-1)+1+(i-1)*y*t:y*t+(i-1)*y*t);
+%         y_arranged(:,1+t*y+(i-2)*(2*y+2*(t-2)):y+t*y+(i-2)*(2*y+2*(t-2))) = data_y(:,1+(i-1)*y*t:y+(i-1)*y*t);
+%         y_arranged(:,1+t*y+y+(i-2)*(2*y+2*(t-2)):1+y+t*y+(y-3)+(i-2)*(2*y+2*(t-2))) = data_y(:,1+y+(i-1)*y*t:y:1+y*(t-2)+(i-1)*y*t);
+%         y_arranged(:,2*y+t*y+(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) = data_y(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
+%         y_arranged(:,y+t*y+(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+(y-2)+(i-2)*(2*y+2*(t-2))) = data_y(:,y*(t-1)+1+(i-1)*y*t:y*t+(i-1)*y*t);
+%         z_arranged(:,1+t*y+(i-2)*(2*y+2*(t-2)):y+t*y+(i-2)*(2*y+2*(t-2))) = data_z(:,1+(i-1)*y*t:y+(i-1)*y*t);
+%         z_arranged(:,1+t*y+y+(i-2)*(2*y+2*(t-2)):1+y+t*y+(y-3)+(i-2)*(2*y+2*(t-2))) = data_z(:,1+y+(i-1)*y*t:y:1+y*(t-2)+(i-1)*y*t);
+%         z_arranged(:,2*y+t*y+(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) = data_z(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
+%         z_arranged(:,y+t*y+(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+(y-2)+(i-2)*(2*y+2*(t-2))) = data_z(:,y*(t-1)+1+(i-1)*y*t:y*t+(i-1)*y*t);     
+        
         x_arranged(:,1+t*y+(i-2)*(2*y+2*(t-2)):y+t*y+(i-2)*(2*y+2*(t-2))) = data_x(:,1+(i-1)*y*t:y+(i-1)*y*t);
-        x_arranged(:,1+t*y+y+(i-2)*(2*y+2*(t-2)):2:1+y+t*y+2*(y-3)+(i-2)*(2*y+2*(t-2))) = data_x(:,1+y+(i-1)*y*t:y:1+y*(t-2)+(i-1)*y*t);
-        x_arranged(:,2+t*y+y+(i-2)*(2*y+2*(t-2)):2:2+y+t*y+2*(y-3)+(i-2)*(2*y+2*(t-2))) = data_x(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
-        x_arranged(:,y+t*y+2*(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) = data_x(:,y*(t-1)+1+(i-1)*y*t:y*t+(i-1)*y*t);
+        x_arranged(:,y+1+t*y+(i-2)*(2*y+2*(t-2)):y+1+(y-3)+t*y+(i-2)*(2*y+2*(t-2))) = data_x(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
+        for edgeNum=1:y-2
+            x_arranged(:,2*y+1-edgeNum+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) =  data_x(:,1+y+(i-1)*y*t+(edgeNum-1)*y);
+        end
+        for edgeNum =1:y
+            x_arranged(:,2*y+t*y+1-edgeNum+(y-2)+(i-2)*(2*y+2*(t-2))) = data_x(:,y*(t-1)+edgeNum+(i-1)*y*t);
+        end
+        
         y_arranged(:,1+t*y+(i-2)*(2*y+2*(t-2)):y+t*y+(i-2)*(2*y+2*(t-2))) = data_y(:,1+(i-1)*y*t:y+(i-1)*y*t);
-        y_arranged(:,1+t*y+y+(i-2)*(2*y+2*(t-2)):2:1+t*y+y+2*(y-3)+(i-2)*(2*y+2*(t-2))) = data_y(:,1+y+(i-1)*y*t:y:1+y*(t-2)+(i-1)*y*t);
-        y_arranged(:,2+t*y+y+(i-2)*(2*y+2*(t-2)):2:2+t*y+y+2*(y-3)+(i-2)*(2*y+2*(t-2))) = data_y(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
-        y_arranged(:,y+t*y+2*(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) = data_y(:,y*(t-1)+1+(i-1)*y*t:y*t+(i-1)*y*t);
+        y_arranged(:,y+1+t*y+(i-2)*(2*y+2*(t-2)):y+1+(y-3)+t*y+(i-2)*(2*y+2*(t-2))) = data_y(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
+        for edgeNum=1:y-2
+            y_arranged(:,2*y+1-edgeNum+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) =  data_y(:,1+y+(i-1)*y*t+(edgeNum-1)*y);
+        end
+        for edgeNum =1:y
+            y_arranged(:,2*y+t*y+1-edgeNum+(y-2)+(i-2)*(2*y+2*(t-2))) = data_y(:,y*(t-1)+edgeNum+(i-1)*y*t);
+        end
+        
         z_arranged(:,1+t*y+(i-2)*(2*y+2*(t-2)):y+t*y+(i-2)*(2*y+2*(t-2))) = data_z(:,1+(i-1)*y*t:y+(i-1)*y*t);
-        z_arranged(:,1+t*y+y+(i-2)*(2*y+2*(t-2)):2:1+t*y+y+2*(y-3)+(i-2)*(2*y+2*(t-2))) = data_z(:,1+y+(i-1)*y*t:y:1+y*(t-2)+(i-1)*y*t);
-        z_arranged(:,2+t*y+y+(i-2)*(2*y+2*(t-2)):2:2+y+t*y+2*(y-3)+(i-2)*(2*y+2*(t-2))) = data_z(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
-        z_arranged(:,y+t*y+2*(y-2)+1+(i-2)*(2*y+2*(t-2)):2*y+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) = data_z(:,y*(t-1)+1+(i-1)*y*t:y*t+(i-1)*y*t);
+        z_arranged(:,y+1+t*y+(i-2)*(2*y+2*(t-2)):y+1+(y-3)+t*y+(i-2)*(2*y+2*(t-2))) = data_z(:,2*y+(i-1)*y*t:y:y*(t-1)+(i-1)*y*t);
+        for edgeNum=1:y-2
+            z_arranged(:,2*y+1-edgeNum+t*y+2*(y-2)+(i-2)*(2*y+2*(t-2))) =  data_z(:,1+y+(i-1)*y*t+(edgeNum-1)*y);
+        end
+        for edgeNum =1:y
+            z_arranged(:,2*y+t*y+1-edgeNum+(y-2)+(i-2)*(2*y+2*(t-2))) = data_z(:,y*(t-1)+edgeNum+(i-1)*y*t);
+        end
+
     end
 end
 
-file_name_data_x = ['3ds_max\',muscle_name, '_data_x.csv'];
-file_name_data_y = ['3ds_max\',muscle_name, '_data_y.csv'];
-file_name_data_z = ['3ds_max\',muscle_name, '_data_z.csv'];
+file_name_data_x = ['3ds_max\',muscle_name, '_3dsmax_data_x.csv'];
+file_name_data_y = ['3ds_max\',muscle_name, '_3dsmax_data_y.csv'];
+file_name_data_z = ['3ds_max\',muscle_name, '_3dsmax_data_z.csv'];
 
 writematrix(x_arranged,file_name_data_x);
 writematrix(y_arranged,file_name_data_y);

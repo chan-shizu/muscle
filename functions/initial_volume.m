@@ -26,5 +26,5 @@ boxVolume = tetraV1 + tetraV2 + tetraV3 + tetraV4 + tetraV5 + tetraV6;
 
 boxSize = size(boxVolume);
 for boxNumber=1:boxSize(2)
-    initialBoxIncludeTetraVolume(1+6*(boxNumber-1):1+6*boxNumber) = boxVolume(boxNumber);
+    initialBoxIncludeTetraVolume(1+tetraNum(2)/(t-1)*(boxNumber-1):1+tetraNum(2)/(t-1)*boxNumber) = boxVolume(boxNumber);
 end

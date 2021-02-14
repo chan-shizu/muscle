@@ -29,16 +29,15 @@ convertTo mybox1 TriMeshGeometry
 mybox1.verts.count
 
 /*各時刻における筋肉の各質点の座標を入力*/
-xdata = (dotnetClass "System.IO.File").ReadAllLines "D:\Documents\matlabまとめ\研究matlab\3ds_max\biceps_ver3_data_x.csv"
-ydata = (dotnetClass "System.IO.File").ReadAllLines "D:\Documents\matlabまとめ\研究matlab\3ds_max\biceps_ver3_data_y.csv"
-zdata = (dotnetClass "System.IO.File").ReadAllLines "D:\Documents\matlabまとめ\研究matlab\3ds_max\biceps_ver3_data_z.csv"
-print xdata.count
+xdata = (dotnetClass "System.IO.File").ReadAllLines "D:\Documents\作業まとめ\2021_0203\起始点_MA=0.05\biceps_long_3dsmax_data_x.csv"
+ydata = (dotnetClass "System.IO.File").ReadAllLines "D:\Documents\作業まとめ\2021_0203\起始点_MA=0.05\biceps_long_3dsmax_data_y.csv"
+zdata = (dotnetClass "System.IO.File").ReadAllLines "D:\Documents\作業まとめ\2021_0203\起始点_MA=0.05\biceps_long_3dsmax_data_z.csv"
 
 
 		/*行ごとに読み取り*/
-		xInfo = (filterString xdata[300] ",")
-		yInfo = (filterString ydata[300] ",")
-		zInfo = (filterString zdata[300] ",")
+		xInfo = (filterString xdata[2500] ",")
+		yInfo = (filterString ydata[2500] ",")
+		zInfo = (filterString zdata[2500] ",")
 		
 		/*if (n == 1) then
 		(
@@ -66,7 +65,7 @@ for i = 1 to 300 do
 	else if i < 51 then
 		(
 			print(2000)
-		mybox1.verts[i].pos.x  = (xInfo[i+160] as float)*100
+		mybox1.verts[i].pos.x  = (xInfo[i+160] as float)*100 /*160*/
 			--print scale_x
 			mybox1.verts[i].pos.y = (yInfo[i+160] as float)*100
 		--print scale_y

@@ -3,13 +3,13 @@ warning('on','all');
 warning;
 checkActivity = true;
 
-L_Percent = readmatrix("muscle_length\Lpercent_rot_27m.csv")
-L_Percent = L_Percent(1:10:end,21)
+L_Percent = readmatrix("muscle_length\Lpercent_rot_27m.csv");
+L_Percent = L_Percent(1:10:end,21);
 % L_Percent(1:20) = [];
 sizeL = size(L_Percent);
 timeStep = sizeL(1)*10;
-ActivityLevel = readmatrix("muscle_length\Activity_27m.csv")
-ActivityLevel = ActivityLevel(:,22)
+ActivityLevel = readmatrix("muscle_length\Activity_27m.csv");
+ActivityLevel = ActivityLevel(:,22);
 ActivityLevel(end) = []
 sizeA = size(ActivityLevel);
 timeStepActivity = sizeA(1);
@@ -18,7 +18,7 @@ muscleNames = loadMuscleName();
 prompt = '上腕二頭筋なら1, オトガイ舌骨筋なら2, 茎突舌骨筋なら3, 顎二腹筋前腹なら4, 顎二腹筋後腹なら5を押してね';
 muscleNumber = inputdlg(prompt,...
     'choose muscle', [1 50])
-muscleNumber = str2num(muscleNumber{1})
+muscleNumber = str2num(muscleNumber{1});
 muscleName = [muscleNames{muscleNumber,1}];
 divisionMuscle = readmatrix("divisionMuscle.csv");
 y=divisionMuscle(1);
@@ -48,13 +48,14 @@ h=divisionMuscle(3);
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
 % L_Percent = [1 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
 % L_Percent = [1 0.99 0.98 0.97 0.96 0.95 0.94 0.93 0.92 0.91 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90 0.90]
+% L_Percent = [1 0.995 0.99 0.985 0.98 0.975 0.97 0.965 0.96 0.955 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95 0.95]
 % L_Percent = [0.90 0.90 0.90 0.90 0.90]
 %  L_Percent = [1.1 1.1 1.1 1.1 1.1]
-L_Percent = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]
+L_Percent = [1 1]
 
 sizeL = size(L_Percent);
 sizeL(1) = sizeL(2)
-timeStep = sizeL(1)*200;
+timeStep = sizeL(1)*2000;
 
 %%強制変位面の座標を作成
 pathDataDisplacementPlane = ['muscle\data_', muscleName, '.csv'];%"data_rot_h.csv"

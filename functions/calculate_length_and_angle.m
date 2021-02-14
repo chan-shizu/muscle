@@ -21,3 +21,6 @@ for s=1:seNum(1)
     
     se(s,4)=atan((datai_z(i,se(s,3))-datai_z(i,se(s,2)))/sqrt((datai_x(i,se(s,3))-datai_x(i,se(s,2)))^2+(datai_y(i,se(s,3))-datai_y(i,se(s,2)))^2));   %角度α(xz平面
 end
+% if i==1
+%     se_step1 = se;
+% end

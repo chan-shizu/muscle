@@ -7,6 +7,10 @@ for k=ul(2)+1:ul(3)
     muscleFiberF_y(i,se(k,3)) = -muscleFiberF(i,k)*cos(se(k,4))*sin(se(k,5));
     muscleFiberF_z(i,se(k,3)) = -muscleFiberF(i,k)*sin(se(k,4));
     
+%     muscleFiberF_x(i,se_step1(k,3)) = -muscleFiberF(i,k)*cos(se_step1(k,4))*cos(se_step1(k,5));
+%     muscleFiberF_y(i,se_step1(k,3)) = -muscleFiberF(i,k)*cos(se_step1(k,4))*sin(se_step1(k,5));
+%     muscleFiberF_z(i,se_step1(k,3)) = -muscleFiberF(i,k)*sin(se_step1(k,4));
+    
 %     muscleFiberF_x((muscleFiberF_x(i,:) < 0.001) & (muscleFiberF_x(i,:) > 0)) = 0.001;
 %     muscleFiberF_y((muscleFiberF_y(i,:) < 0.001) & (muscleFiberF_y(i,:) > 0)) = 0.001;
 %     muscleFiberF_z((muscleFiberF_z(i,:) < 0.001) & (muscleFiberF_z(i,:) > 0)) = 0.001;

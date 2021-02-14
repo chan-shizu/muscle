@@ -34,7 +34,10 @@ HillActive(i,muscleFiberNumber) = ActivityLevel(i) * f_Lce(i,muscleFiberNumber) 
 %     muscleFiberF(i,s)=HillActive(i,muscleFiberNumber+HillPassive(i,muscleFiberNumber;%受動的な力と能動的な力の和
 %     %                         springF(i,s)=-(HillActive(i,muscleFiberNumber+HillPassive(i,muscleFiberNumber);%*scale;%受動的な力と能動的な力の和
 % end
-
+% if muscleFiberNumber ~= 13 %(muscleFiberNumber <6) | (muscleFiberNumber >20) | (rem(muscleFiberNumber,5) == 1) |(rem(muscleFiberNumber,5) == 0)
+%     HillActive(i,muscleFiberNumber) = 0;
+%     HillPassive(i,muscleFiberNumber) = 0;
+% end
 for massPointsNumber=1:h-1 %高さ方向の質点の間隔の数
     muscleFiberF(i,ul(2)+muscleFiberNumber+(massPointsNumber-1)*y*t)=(HillActive(i,muscleFiberNumber)+HillPassive(i,muscleFiberNumber));%受動的な力と能動的な力の和(i,muscleFiberNumber) = muscleFiberLength(muscleFiberNumber) + length_s(i,ul(2)+muscleFiberNumber+(massPointsNumber-1)*y*t);
 end
